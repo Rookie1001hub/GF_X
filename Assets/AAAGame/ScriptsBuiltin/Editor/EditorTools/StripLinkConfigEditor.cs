@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using HybridCLR.Editor;
+
 namespace UGF.EditorTools
 {
     internal enum ConfigEditorMode
@@ -8,7 +10,7 @@ namespace UGF.EditorTools
         StripLinkConfig,
         AotDllConfig
     }
-    [EditorToolMenu("打包/代码裁剪配置",null, 1)]
+    [EditorToolMenu("打包/代码裁剪配置", null, 1)]
     public class StripLinkConfigEditor : EditorToolBase
     {
         private class ItemData
@@ -31,8 +33,10 @@ namespace UGF.EditorTools
         private GUIStyle selectedStyle;
 
         ConfigEditorMode mode;
-
-
+        /// <summary>
+        /// 是否深度裁剪元数据补充dll
+        /// </summary>
+        private bool isDeepStripAOTDll;
         private void OnEnable()
         {
             normalStyle = new GUIStyle();
@@ -43,6 +47,7 @@ namespace UGF.EditorTools
             dataList = new List<ItemData>();
 
             InitEditorMode();
+            isDeepStripAOTDll = EditorPrefs.GetBool(HybridCLREditorTools.DEEP_STRIP_AOTDLL);
         }
         protected virtual void InitEditorMode()
         {
@@ -99,6 +104,10 @@ namespace UGF.EditorTools
             }
             GUILayout.FlexibleSpace();
 
+            if (mode == ConfigEditorMode.AotDllConfig)
+            {
+                isDeepStripAOTDll = GUILayout.Toggle(isDeepStripAOTDll, "是否使用深度裁剪aotDLL", GUILayout.Width(200), btHeight);
+            }
             if (GUILayout.Button("刷新列表", btWidth, btHeight))
             {
                 RefreshListData();
@@ -114,6 +123,7 @@ namespace UGF.EditorTools
                         }
                         break;
                     case ConfigEditorMode.AotDllConfig:
+                        EditorPrefs.SetBool(HybridCLREditorTools.DEEP_STRIP_AOTDLL, isDeepStripAOTDll);
                         if (StripLinkConfigTool.Save2AotDllList(GetCurrentSelectedList()))
                         {
                             EditorUtility.DisplayDialog("AOT dlls Editor", "Update AOT dll List success!", "OK");

@@ -16,6 +16,7 @@ using Cysharp.Threading.Tasks;
 using UnityEditor.Build;
 using System.Xml;
 using UGF.EditorTools.ResourceTools;
+using HybridCLR.Editor;
 
 namespace UGF.EditorTools
 {
@@ -276,7 +277,7 @@ namespace UGF.EditorTools
                 {
                     EditorGUILayout.LabelField("Build Resources Settings", EditorStyles.boldLabel);
                     AppBuildSettings.Instance.UseResourceRule = EditorGUILayout.ToggleLeft("Enable [Rule Editor]", AppBuildSettings.Instance.UseResourceRule, GUILayout.Width(160));
-                    if(AppBuildSettings.Instance.UseResourceRule && GUILayout.Button("Rule Editor", GUILayout.Width(160)))
+                    if (AppBuildSettings.Instance.UseResourceRule && GUILayout.Button("Rule Editor", GUILayout.Width(160)))
                     {
                         ResourceRuleEditor.Open();
                         GUIUtility.ExitGUI();
@@ -657,7 +658,7 @@ namespace UGF.EditorTools
                     EditorGUILayout.EndHorizontal();
                 }
 
-#elif UNITY_IOS          
+#elif UNITY_IOS
                 EditorGUILayout.BeginHorizontal();
                 {
                     EditorGUILayout.LabelField("Build Number", GUILayout.Width(160f));
@@ -665,7 +666,7 @@ namespace UGF.EditorTools
                 }
                 EditorGUILayout.EndHorizontal();
 #endif
-                    }
+            }
             EditorGUILayout.EndVertical();
         }
         private void DrawHotfixConfigPanel()
@@ -789,7 +790,7 @@ namespace UGF.EditorTools
         }
         private void DeleteAotDlls()
         {
-            string aotSaveDir = UtilityBuiltin.AssetsPath.GetCombinePath("Resources", ConstBuiltin.AOT_DLL_DIR);
+            string aotSaveDir = UtilityBuiltin.AssetsPath.GetCombinePath(ConstBuiltin.BUILTIN_AOT_DLL_DIR);
             if (Directory.Exists(aotSaveDir))
             {
                 AssetDatabase.DeleteAsset(aotSaveDir);
@@ -905,6 +906,8 @@ namespace UGF.EditorTools
             // 桥接函数生成依赖于AOT dll，必须保证已经build过，生成AOT dll
             MethodBridgeGeneratorCommand.GenerateMethodBridgeAndReversePInvokeWrapper(target);
             AOTReferenceGeneratorCommand.GenerateAOTGenericReference(target);
+            //生成元数据补充dll的深度裁剪部分
+            HybridCLREditorTools.DeepStripAOTAssembly();
         }
         private void BrowseOutputDirectory()
         {

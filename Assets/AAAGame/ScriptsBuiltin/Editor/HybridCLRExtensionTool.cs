@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using GameFramework;
+using HybridCLR.Editor;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -22,11 +23,11 @@ namespace UGF.EditorTools
         {
             HybridCLR.Editor.Commands.CompileDllCommand.CompileDllActiveBuildTarget();
             var desDir = UtilityBuiltin.AssetsPath.GetCombinePath(Application.dataPath, ConstBuiltin.HOT_FIX_DLL_DIR);
-            var dllFils = Directory.GetFiles(desDir, "*.dll.bytes");
-            for (int i = dllFils.Length - 1; i >= 0; i--)
-            {
-                File.Delete(dllFils[i]);
-            }
+            //var dllFils = Directory.GetFiles(desDir, "*.dll.bytes");
+            //for (int i = dllFils.Length - 1; i >= 0; i--)
+            //{
+            //    File.Delete(dllFils[i]);
+            //}
             string[] failList = CopyHotfixDllTo(EditorUserBuildSettings.activeBuildTarget, desDir, includeAotDll);
             string content = $"Compile dlls and copy to '{ConstBuiltin.HOT_FIX_DLL_DIR}' success.";
             if (failList.Length > 0)
@@ -71,34 +72,39 @@ namespace UGF.EditorTools
                 var failNames = CopyAotDllsToProject(target);
                 failList.AddRange(failNames);
             }
-            var hotfixListFile = UtilityBuiltin.AssetsPath.GetCombinePath(Application.dataPath, ConstBuiltin.HOT_FIX_DLL_DIR, "HotfixFileList.txt");
+            var hotfixListFile = UtilityBuiltin.AssetsPath.GetCombinePath(Application.dataPath, ConstBuiltin.HOT_FIX_DLL_DIR, ConstBuiltin.HotfixFileList);
             File.WriteAllText(hotfixListFile, UtilityBuiltin.Json.ToJson(HybridCLR.Editor.SettingsUtil.HotUpdateAssemblyFilesIncludePreserved), System.Text.Encoding.UTF8);
             AssetDatabase.Refresh();
             return failList.ToArray();
         }
         public static string[] CopyAotDllsToProject(BuildTarget target)
         {
+            bool enableDeepStripAotDll = EditorPrefs.GetBool(HybridCLREditorTools.DEEP_STRIP_AOTDLL);
             List<string> failList = new List<string>();
             string aotDllDir = HybridCLR.Editor.SettingsUtil.GetAssembliesPostIl2CppStripDir(target);
-            string aotSaveDir = UtilityBuiltin.AssetsPath.GetCombinePath(Application.dataPath, "Resources", ConstBuiltin.AOT_DLL_DIR);
-            if (Directory.Exists(aotSaveDir))
+            string deepStripAotDllDir = $"{HybridCLREditorTools.DeepStrippedAOTAssemblyPath}/{target}";
+            string aotSaveDirBuiltIn = UtilityBuiltin.AssetsPath.GetCombinePath(Application.dataPath, ConstBuiltin.BUILTIN_AOT_DLL_DIR);
+            string aotSaveDirHotfix = UtilityBuiltin.AssetsPath.GetCombinePath(Application.dataPath, ConstBuiltin.HOT_FIX_DLL_DIR);
+            string aotPatchFileListPath = UtilityBuiltin.AssetsPath.GetCombinePath(Application.dataPath, ConstBuiltin.HOT_FIX_DLL_DIR, ConstBuiltin.PatchAOTAssemblyList);
+            if (!Directory.Exists(aotSaveDirBuiltIn))
             {
-                Directory.Delete(aotSaveDir, true);
+                Directory.CreateDirectory(aotSaveDirBuiltIn);
             }
-            Directory.CreateDirectory(aotSaveDir);
             foreach (var dll in HybridCLR.Editor.SettingsUtil.AOTAssemblyNames)
             {
-                string dllPath = UtilityBuiltin.AssetsPath.GetCombinePath(aotDllDir, dll.EndsWith(".dll") ? dll : dll + ".dll");
+                string dllPath = UtilityBuiltin.AssetsPath.GetCombinePath(enableDeepStripAotDll ? deepStripAotDllDir : aotDllDir, dll.EndsWith(".dll") ? dll : dll + ".dll");
                 if (!File.Exists(dllPath))
                 {
                     Debug.LogWarning($"ab中添加AOT补充元数据dll:{dllPath} 时发生错误,文件不存在。裁剪后的AOT dll在BuildPlayer时才能生成，因此需要你先构建一次游戏App后再打包。");
                     failList.Add(dllPath);
                     continue;
                 }
-                string dllBytesPath = UtilityBuiltin.AssetsPath.GetCombinePath(aotSaveDir, Utility.Text.Format("{0}.bytes", dll));
-                File.Copy(dllPath, dllBytesPath, true);
+                string dllBytesBuiltInPath = UtilityBuiltin.AssetsPath.GetCombinePath(aotSaveDirBuiltIn, Utility.Text.Format("{0}.bytes", dll));
+                string dllBytesHotfixPath = UtilityBuiltin.AssetsPath.GetCombinePath(aotSaveDirHotfix, Utility.Text.Format("{0}.bytes", dll));
+                File.Copy(dllPath, dllBytesBuiltInPath, true);
+                File.Copy(dllPath, dllBytesHotfixPath, true);
             }
-
+            File.WriteAllText(aotPatchFileListPath, UtilityBuiltin.Json.ToJson(HybridCLR.Editor.SettingsUtil.AOTAssemblyNames), System.Text.Encoding.UTF8);
             return failList.ToArray();
         }
         public static void EnableHybridCLR()
@@ -231,7 +237,7 @@ namespace UGF.EditorTools
 #elif UNITY_IOS
         return UnityEditor.BuildTargetGroup.iOS;
 #elif UNITY_STANDALONE
-        return UnityEditor.BuildTargetGroup.Standalone;
+            return UnityEditor.BuildTargetGroup.Standalone;
 #elif UNITY_WEBGL
         return UnityEditor.BuildTargetGroup.WebGL;
 #else
@@ -246,7 +252,7 @@ namespace UGF.EditorTools
 #elif UNITY_IOS
         return UnityEditor.Build.NamedBuildTarget.iOS;
 #elif UNITY_STANDALONE
-        return UnityEditor.Build.NamedBuildTarget.Standalone;
+            return UnityEditor.Build.NamedBuildTarget.Standalone;
 #elif UNITY_WEBGL
         return UnityEditor.Build.NamedBuildTarget.WebGL;
 #else
