@@ -2,7 +2,6 @@
     "name": "Hotfix",
     "rootNamespace": "",
     "references": [
-        "Unity.TextMeshPro",
         "Cinemachine",
         "UnityGameFramework.Runtime",
         "UltimateJoystick",
@@ -13,7 +12,10 @@
         "DOTween.Extension",
         "Unity.Jobs",
         "Unity.Collections",
-        "Unity.Mathematics"
+        "Unity.Mathematics",
+        "Unity.TextMeshPro",
+        "Unity.Timeline",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -15,10 +15,7 @@ MonoBehaviour:
   m_LoadFromBytes: 0
   mDataTables:
   - CameraViewTable
-  - ColorTable
-  - CombatUnitTable
   - LevelTable
-  - TestTable
   - Core/EntityGroupTable
   - Core/LanguagesTable
   - Core/SoundGroupTable
@@ -26,12 +23,7 @@ MonoBehaviour:
   - Core/UITable
   mConfigs:
   - GameConfig
-  mLanguages:
-  - ChineseSimplified
-  - ChineseTraditional
-  - English
-  - Japanese
-  - Korean
+  mLanguages: []
   mProcedures:
   - ChangeSceneProcedure
   - GameOverProcedure
