@@ -272,9 +272,9 @@ namespace UGF.EditorTools
         }
         AppConfigs appConfig;
         GameDataScrollView[] svDataArr;
-        bool procedureFoldout = true;
-        Vector2 procedureScrollPos;
-        ItemData[] procedures;string[] gamePlayScenes;
+        bool procedureFoldout = true; bool gamePlaySceneFoldout = false;
+        Vector2 procedureScrollPos; Vector2 gamePlayScenesScrollPos;
+        ItemData[] procedures; List<string> gamePlayScenes;
         private GUIStyle normalStyle;
         private GUIStyle selectedStyle;
         GUIContent procedureTitleContent;
@@ -282,6 +282,8 @@ namespace UGF.EditorTools
         GUIContent loadFromBytesContent;
         GUIContent designResolutionContent;
         GUIContent designResolutionBtnContent;
+        GUIContent gamePlaySceneTitleContent;
+        string newGamePlayScene;
         private void OnEnable()
         {
             appConfig = target as AppConfigs;
@@ -291,11 +293,12 @@ namespace UGF.EditorTools
             selectedStyle.normal.textColor = ColorUtility.TryParseHtmlString("#2BD988", out var textCol) ? textCol : Color.green;
 
             procedureTitleContent = new GUIContent("流程(Procedures)", "勾选的流程在有限状态机中有效");
+            gamePlaySceneTitleContent = new GUIContent("GamePlay使用的场景", "加入到列表中的将会在打包设置中出现");
             editorConstSettingsContent = EditorGUIUtility.TrTextContentWithIcon("Path Settings [设置DataTable/Config导入/导出路径]", "Settings");
             designResolutionContent = new GUIContent("UI设计分辨率:");
             designResolutionBtnContent = new GUIContent("确认修改");
             loadFromBytesContent = new GUIContent("Load from bytes(勾选:二进制模式; 不勾选:文本模式)", "数据表/配置表/多语言表使用二进制模式");
-            svDataArr = new GameDataScrollView[] { new GameDataScrollView(appConfig, GameDataType.DataTable), new GameDataScrollView(appConfig, GameDataType.Config), 
+            svDataArr = new GameDataScrollView[] { new GameDataScrollView(appConfig, GameDataType.DataTable), new GameDataScrollView(appConfig, GameDataType.Config),
                 new GameDataScrollView(appConfig, GameDataType.Language)};
             ReloadScrollView(appConfig);
         }
@@ -351,6 +354,46 @@ namespace UGF.EditorTools
                     }
                     EditorGUILayout.EndVertical();
                 }
+            }
+            gamePlaySceneFoldout = EditorGUILayout.Foldout(gamePlaySceneFoldout, gamePlaySceneTitleContent);
+            if (gamePlaySceneFoldout)
+            {
+                EditorGUILayout.BeginVertical();
+                gamePlayScenesScrollPos = EditorGUILayout.BeginScrollView(gamePlayScenesScrollPos, "box", GUILayout.Height(200));
+                {
+                    EditorGUI.BeginChangeCheck();
+                    for (int i = 0; i < gamePlayScenes.Count; i++)
+                    {
+                        GUILayout.BeginHorizontal();
+                        gamePlayScenes[i] = GUILayout.TextField(gamePlayScenes[i]);
+
+                        if (GUILayout.Button("移除场景", GUILayout.Width(75)))
+                        {
+                            gamePlayScenes.RemoveAt(i);
+                            break; // Exit the loop since the list has changed
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        SaveConfig(appConfig);
+                    }
+                    EditorGUILayout.EndScrollView();
+                }
+                EditorGUILayout.EndVertical();
+                GUILayout.BeginHorizontal();
+                // 输入新项的文本框
+                newGamePlayScene = GUILayout.TextField(newGamePlayScene);
+                // 按钮添加新项
+                if (GUILayout.Button("增加场景", GUILayout.Width(75)))
+                {
+                    if (!string.IsNullOrEmpty(newGamePlayScene) && !gamePlayScenes.Contains(newGamePlayScene))
+                    {
+                        gamePlayScenes.Add(newGamePlayScene);
+                        newGamePlayScene = "";
+                    }
+                }
+                GUILayout.EndHorizontal();
             }
             foreach (var item in svDataArr)
             {
@@ -488,8 +531,8 @@ namespace UGF.EditorTools
         /// <param name="cfg"></param>
         private void LoadGamePlayScenes(AppConfigs cfg)
         {
-            gamePlayScenes= UtilityBuiltin.Json.ToObject<string[]>(File.ReadAllText(ConstEditor.GamePlaySceneFile));
-            
+            gamePlayScenes = UtilityBuiltin.Json.ToObject<List<string>>(File.ReadAllText(ConstEditor.GamePlaySceneFile));
+
         }
     }
 
