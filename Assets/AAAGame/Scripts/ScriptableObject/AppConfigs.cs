@@ -34,6 +34,11 @@ public class AppConfigs : ScriptableObject
 
     public string[] Procedures => mProcedures;
 
+    [Header("GamePlay场景列表")]
+    [SerializeField] string[] gamePlayScenes;
+
+    public string[] GamePlayScenes => gamePlayScenes;
+
     private void Awake()
     {
         mInstance = this;

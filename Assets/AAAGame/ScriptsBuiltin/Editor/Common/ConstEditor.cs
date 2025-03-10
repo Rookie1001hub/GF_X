@@ -29,6 +29,10 @@ namespace UGF.EditorTools
 
         public static readonly string PrefabsPath = "Assets/AAAGame/Prefabs";
         public static readonly string ScenePath = "Assets/AAAGame/Scene";
+        /// <summary>
+        /// GamePlay的场景列表
+        /// </summary>
+        public static readonly string GamePlaySceneFile = "Assets/AAAGame/ScriptsBuiltin/Editor/Configs/GamePlayList.txt";
 
         public const string DataTableCodeTemplate = "Assets/AAAGame/ScriptsBuiltin/Editor/DataTableGenerator/DataTableCodeTemplate/DataTableCodeTemplate.txt"; //生成配置表代码的模板文件
         public const string BuiltinAssembly = "Assets/AAAGame/ScriptsBuiltin/Runtime/Builtin.Runtime.asmdef";

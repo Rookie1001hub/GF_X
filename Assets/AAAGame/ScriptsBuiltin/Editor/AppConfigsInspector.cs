@@ -19,7 +19,8 @@ namespace UGF.EditorTools
     {
         DataTable = 1,
         Config = 2,
-        Language = 4
+        Language = 4,
+        GamePlayScene = 8
     }
 
     [CustomEditor(typeof(AppConfigs))]
@@ -71,6 +72,9 @@ namespace UGF.EditorTools
                         break;
                     case GameDataType.Language:
                         titleContent.tooltip = "选择项目需要用到的多语言表";
+                        break;
+                    case GameDataType.GamePlayScene:
+                        titleContent.tooltip = "选择项目玩法用到的场景";
                         break;
                     default:
                         break;
@@ -270,7 +274,7 @@ namespace UGF.EditorTools
         GameDataScrollView[] svDataArr;
         bool procedureFoldout = true;
         Vector2 procedureScrollPos;
-        ItemData[] procedures;
+        ItemData[] procedures;string[] gamePlayScenes;
         private GUIStyle normalStyle;
         private GUIStyle selectedStyle;
         GUIContent procedureTitleContent;
@@ -291,7 +295,8 @@ namespace UGF.EditorTools
             designResolutionContent = new GUIContent("UI设计分辨率:");
             designResolutionBtnContent = new GUIContent("确认修改");
             loadFromBytesContent = new GUIContent("Load from bytes(勾选:二进制模式; 不勾选:文本模式)", "数据表/配置表/多语言表使用二进制模式");
-            svDataArr = new GameDataScrollView[] { new GameDataScrollView(appConfig, GameDataType.DataTable), new GameDataScrollView(appConfig, GameDataType.Config), new GameDataScrollView(appConfig, GameDataType.Language) };
+            svDataArr = new GameDataScrollView[] { new GameDataScrollView(appConfig, GameDataType.DataTable), new GameDataScrollView(appConfig, GameDataType.Config), 
+                new GameDataScrollView(appConfig, GameDataType.Language)};
             ReloadScrollView(appConfig);
         }
         private void OnDisable()
@@ -456,7 +461,7 @@ namespace UGF.EditorTools
             {
                 item.Reload();
             }
-
+            LoadGamePlayScenes(cfg);
             ReloadProcedures(cfg);
         }
         private void ReloadProcedures(AppConfigs cfg)
@@ -476,6 +481,15 @@ namespace UGF.EditorTools
                 }
             }
             //#endif
+        }
+        /// <summary>
+        /// 获取GamePlay的场景配置数据
+        /// </summary>
+        /// <param name="cfg"></param>
+        private void LoadGamePlayScenes(AppConfigs cfg)
+        {
+            gamePlayScenes= UtilityBuiltin.Json.ToObject<string[]>(File.ReadAllText(ConstEditor.GamePlaySceneFile));
+            
         }
     }
 
