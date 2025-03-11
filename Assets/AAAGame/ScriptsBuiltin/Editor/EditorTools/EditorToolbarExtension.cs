@@ -121,6 +121,7 @@ namespace UGF.EditorTools
             popMenu.allowDuplicateNames = true;
             var sceneGuids = AssetDatabase.FindAssets("t:Scene", new string[] { ConstEditor.ScenePath });
             sceneAssetList.Clear();
+            int gamePlayStartIndex = 0;
             for (int i = 0; i < sceneGuids.Length; i++)
             {
                 var scenePath = AssetDatabase.GUIDToAssetPath(sceneGuids[i]);
@@ -136,6 +137,16 @@ namespace UGF.EditorTools
                 }
 
                 popMenu.AddItem(new GUIContent(displayName), false, menuIdx => { SwitchScene((int)menuIdx); }, i);
+                gamePlayStartIndex = i + 1;
+            }
+            var appConfigs = AppConfigs.GetInstanceEditor();
+            for (int i = 0; i < appConfigs.GamePlayScenes.Length; i++)
+            {
+                var scenePath = appConfigs.GamePlayScenes[i];
+                sceneAssetList.Add(scenePath);
+                var sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
+                string displayName = "GamePlay/" + sceneName;
+                popMenu.AddItem(new GUIContent(displayName), false, menuIdx => { SwitchScene((int)menuIdx); }, i + gamePlayStartIndex);
             }
             popMenu.ShowAsContext();
         }

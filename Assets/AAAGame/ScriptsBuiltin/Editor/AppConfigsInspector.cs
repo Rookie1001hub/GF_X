@@ -19,8 +19,7 @@ namespace UGF.EditorTools
     {
         DataTable = 1,
         Config = 2,
-        Language = 4,
-        GamePlayScene = 8
+        Language = 4
     }
 
     [CustomEditor(typeof(AppConfigs))]
@@ -72,9 +71,6 @@ namespace UGF.EditorTools
                         break;
                     case GameDataType.Language:
                         titleContent.tooltip = "选择项目需要用到的多语言表";
-                        break;
-                    case GameDataType.GamePlayScene:
-                        titleContent.tooltip = "选择项目玩法用到的场景";
                         break;
                     default:
                         break;
@@ -272,7 +268,7 @@ namespace UGF.EditorTools
         }
         AppConfigs appConfig;
         GameDataScrollView[] svDataArr;
-        bool procedureFoldout = true; bool gamePlaySceneFoldout = false;
+        bool procedureFoldout = true; bool gamePlaySceneFoldout = true;
         Vector2 procedureScrollPos; Vector2 gamePlayScenesScrollPos;
         ItemData[] procedures; List<string> gamePlayScenes;
         private GUIStyle normalStyle;
@@ -369,7 +365,9 @@ namespace UGF.EditorTools
 
                         if (GUILayout.Button("移除场景", GUILayout.Width(75)))
                         {
-                            gamePlayScenes.RemoveAt(i);
+                            var tempScene = gamePlayScenes[i];
+                            gamePlayScenes.Remove(tempScene);
+                            AdjustEditorBuildScene(false, tempScene);
                             break; // Exit the loop since the list has changed
                         }
                         GUILayout.EndHorizontal();
@@ -390,6 +388,7 @@ namespace UGF.EditorTools
                     if (!string.IsNullOrEmpty(newGamePlayScene) && !gamePlayScenes.Contains(newGamePlayScene))
                     {
                         gamePlayScenes.Add(newGamePlayScene);
+                        AdjustEditorBuildScene(true, newGamePlayScene);
                         newGamePlayScene = "";
                     }
                 }
@@ -495,6 +494,8 @@ namespace UGF.EditorTools
                 selectedProcedures.Add(item.excelName);
             }
             cfg.GetType().GetField("mProcedures", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(cfg, selectedProcedures.ToArray());
+            cfg.GetType().GetField("gamePlayScenes", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(cfg, gamePlayScenes.ToArray());
+            File.WriteAllText(ConstEditor.GamePlaySceneFile, UtilityBuiltin.Json.ToJson(gamePlayScenes));
             EditorUtility.SetDirty(cfg);
             EditorUtility.SetDirty(AppSettings.Instance);
         }
@@ -532,7 +533,42 @@ namespace UGF.EditorTools
         private void LoadGamePlayScenes(AppConfigs cfg)
         {
             gamePlayScenes = UtilityBuiltin.Json.ToObject<List<string>>(File.ReadAllText(ConstEditor.GamePlaySceneFile));
-
+            EditorBuildSettingsScene[] buildScenes = EditorBuildSettings.scenes;
+            foreach (var targetScene in gamePlayScenes)
+            {
+                if (!buildScenes.Any(e => e.path.Equals(targetScene)))
+                {
+                    EditorBuildSettingsScene newScene = new EditorBuildSettingsScene(targetScene, true);
+                    ArrayUtility.Add(ref buildScenes, newScene);
+                    EditorBuildSettings.scenes = buildScenes;
+                }
+            }
+        }
+        /// <summary>
+        /// 调整打包的场景
+        /// </summary>
+        /// <param name="add"></param>
+        /// <param name="scenePath"></param>
+        private void AdjustEditorBuildScene(bool add, string scenePath)
+        {
+            EditorBuildSettingsScene[] buildScenes = EditorBuildSettings.scenes;
+            var condition = add ? !buildScenes.Any(e => e.path.Equals(scenePath)) : buildScenes.Any(e => e.path.Equals(scenePath));
+            if (condition)
+            {
+                EditorBuildSettingsScene newScene = new EditorBuildSettingsScene(scenePath, true);
+                if (add)
+                    ArrayUtility.Add(ref buildScenes, newScene);
+                else
+                {
+                    var indexesToRemove = buildScenes
+                    .Select((scene, index) => (scene, index))
+                    .Where(t => t.scene.path == scenePath)
+                    .Select(t => t.index).FirstOrDefault();
+                    if (indexesToRemove != 0)
+                        ArrayUtility.RemoveAt(ref buildScenes, indexesToRemove);
+                }
+                EditorBuildSettings.scenes = buildScenes;
+            }
         }
     }
 
