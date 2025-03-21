@@ -37,6 +37,7 @@ namespace UGF.EditorTools
                 this.excelName = dllName;
             }
         }
+
         private class GameDataScrollView
         {
             public bool foldout = true;
@@ -270,7 +271,7 @@ namespace UGF.EditorTools
         GameDataScrollView[] svDataArr;
         bool procedureFoldout = true; bool gamePlaySceneFoldout = true;
         Vector2 procedureScrollPos; Vector2 gamePlayScenesScrollPos;
-        ItemData[] procedures; List<string> gamePlayScenes;
+        ItemData[] procedures; List<GamePlayScenePair> gamePlayScenes = new List<GamePlayScenePair>();
         private GUIStyle normalStyle;
         private GUIStyle selectedStyle;
         GUIContent procedureTitleContent;
@@ -280,6 +281,8 @@ namespace UGF.EditorTools
         GUIContent designResolutionBtnContent;
         GUIContent gamePlaySceneTitleContent;
         string newGamePlayScene;
+        string newGamePlaySceneKeyword;
+        private GamePlaySceneType gamePlaySceneType;
         private void OnEnable()
         {
             appConfig = target as AppConfigs;
@@ -361,13 +364,15 @@ namespace UGF.EditorTools
                     for (int i = 0; i < gamePlayScenes.Count; i++)
                     {
                         GUILayout.BeginHorizontal();
-                        gamePlayScenes[i] = GUILayout.TextField(gamePlayScenes[i]);
-
+                        gamePlayScenes[i].scenePath = GUILayout.TextField(gamePlayScenes[i].scenePath);
+                        gamePlayScenes[i].sceneKeyword = GUILayout.TextField(gamePlayScenes[i].sceneKeyword);
+                        gamePlayScenes[i].sceneTypeTag = (GamePlaySceneType)EditorGUILayout.EnumPopup(gamePlayScenes[i].sceneTypeTag);
                         if (GUILayout.Button("移除场景", GUILayout.Width(75)))
                         {
                             var tempScene = gamePlayScenes[i];
                             gamePlayScenes.Remove(tempScene);
-                            AdjustEditorBuildScene(false, tempScene);
+                            AdjustEditorBuildScene(false, tempScene.scenePath);
+                            SaveConfig(appConfig);
                             break; // Exit the loop since the list has changed
                         }
                         GUILayout.EndHorizontal();
@@ -381,14 +386,22 @@ namespace UGF.EditorTools
                 EditorGUILayout.EndVertical();
                 GUILayout.BeginHorizontal();
                 // 输入新项的文本框
-                newGamePlayScene = GUILayout.TextField(newGamePlayScene);
+                GUILayout.Label("场景资源路径");
+                newGamePlayScene = GUILayout.TextField(newGamePlayScene,GUILayout.MinWidth(250));
+                GUILayout.Label("场景映射关键词");
+                newGamePlaySceneKeyword = GUILayout.TextField(newGamePlaySceneKeyword, GUILayout.MinWidth(250));
+                GUILayout.Label("场景标记定义");
+                // 绘制下拉框
+                gamePlaySceneType = (GamePlaySceneType)EditorGUILayout.EnumPopup(gamePlaySceneType);
                 // 按钮添加新项
                 if (GUILayout.Button("增加场景", GUILayout.Width(75)))
                 {
-                    if (!string.IsNullOrEmpty(newGamePlayScene) && !gamePlayScenes.Contains(newGamePlayScene))
+                    var scenePair = new GamePlayScenePair(newGamePlayScene, newGamePlaySceneKeyword, gamePlaySceneType);
+                    if (!string.IsNullOrEmpty(newGamePlayScene) && !gamePlayScenes.Any(e => e.scenePath == scenePair.scenePath))
                     {
-                        gamePlayScenes.Add(newGamePlayScene);
+                        gamePlayScenes.Add(scenePair);
                         AdjustEditorBuildScene(true, newGamePlayScene);
+                        SaveConfig(appConfig);
                         newGamePlayScene = "";
                     }
                 }
@@ -416,7 +429,6 @@ namespace UGF.EditorTools
             }
             serializedObject.ApplyModifiedProperties();
         }
-
         private static void SetDesignResolution(Vector2Int designResolution)
         {
             EditorUtility.SetDirty(AppSettings.Instance);
@@ -521,7 +533,7 @@ namespace UGF.EditorTools
                 foreach (var proceClass in proceClassArr)
                 {
                     var proceName = proceClass.FullName;
-                    ArrayUtility.Add(ref procedures, new ItemData(cfg.Procedures.Contains(proceName), proceName));
+                    ArrayUtility.Add(ref procedures, new ItemData(cfg.Procedures==null?false: cfg.Procedures.Contains(proceName), proceName));
                 }
             }
             //#endif
@@ -532,13 +544,16 @@ namespace UGF.EditorTools
         /// <param name="cfg"></param>
         private void LoadGamePlayScenes(AppConfigs cfg)
         {
-            gamePlayScenes = UtilityBuiltin.Json.ToObject<List<string>>(File.ReadAllText(ConstEditor.GamePlaySceneFile));
+            if (File.Exists(ConstEditor.GamePlaySceneFile))
+                gamePlayScenes = UtilityBuiltin.Json.ToObject<List<GamePlayScenePair>>(File.ReadAllText(ConstEditor.GamePlaySceneFile));
+            else
+                gamePlayScenes = new List<GamePlayScenePair>();
             EditorBuildSettingsScene[] buildScenes = EditorBuildSettings.scenes;
             foreach (var targetScene in gamePlayScenes)
             {
                 if (!buildScenes.Any(e => e.path.Equals(targetScene)))
                 {
-                    EditorBuildSettingsScene newScene = new EditorBuildSettingsScene(targetScene, true);
+                    EditorBuildSettingsScene newScene = new EditorBuildSettingsScene(targetScene.scenePath, true);
                     ArrayUtility.Add(ref buildScenes, newScene);
                     EditorBuildSettings.scenes = buildScenes;
                 }

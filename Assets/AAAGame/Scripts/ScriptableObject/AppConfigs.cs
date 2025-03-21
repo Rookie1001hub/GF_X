@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Threading.Tasks;
-
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -35,9 +35,9 @@ public class AppConfigs : ScriptableObject
     public string[] Procedures => mProcedures;
 
     [Header("GamePlay场景列表")]
-    [SerializeField] string[] gamePlayScenes;
+    [SerializeField] GamePlayScenePair[] gamePlayScenes;
 
-    public string[] GamePlayScenes => gamePlayScenes;
+    public GamePlayScenePair[] GamePlayScenes => gamePlayScenes;
 
     private void Awake()
     {

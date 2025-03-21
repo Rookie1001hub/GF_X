@@ -23,6 +23,7 @@ MonoBehaviour:
   - Core/UITable
   mConfigs:
   - GameConfig
+  - SceneConfig
   mLanguages: []
   mProcedures:
   - ChangeSceneProcedure
@@ -30,4 +31,7 @@ MonoBehaviour:
   - GameProcedure
   - MenuProcedure
   - PreloadProcedure
-  gamePlayScenes: []
+  gamePlayScenes:
+  - scenePath: Assets/AAAGame/GamePlay/Scenes/Game.unity
+    sceneKeyword: Game
+    sceneTypeTag: 0

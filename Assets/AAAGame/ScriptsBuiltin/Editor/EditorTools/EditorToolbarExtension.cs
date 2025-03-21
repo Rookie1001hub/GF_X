@@ -140,13 +140,16 @@ namespace UGF.EditorTools
                 gamePlayStartIndex = i + 1;
             }
             var appConfigs = AppConfigs.GetInstanceEditor();
-            for (int i = 0; i < appConfigs.GamePlayScenes.Length; i++)
+            if (appConfigs.GamePlayScenes != null)
             {
-                var scenePath = appConfigs.GamePlayScenes[i];
-                sceneAssetList.Add(scenePath);
-                var sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
-                string displayName = "GamePlay/" + sceneName;
-                popMenu.AddItem(new GUIContent(displayName), false, menuIdx => { SwitchScene((int)menuIdx); }, i + gamePlayStartIndex);
+                for (int i = 0; i < appConfigs.GamePlayScenes.Length; i++)
+                {
+                    var scenePair = appConfigs.GamePlayScenes[i];
+                    sceneAssetList.Add(scenePair.scenePath);
+                    var sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePair.scenePath);
+                    string displayName = $"{scenePair.sceneTypeTag}/{sceneName}";
+                    popMenu.AddItem(new GUIContent(displayName), false, menuIdx => { SwitchScene((int)menuIdx); }, i + gamePlayStartIndex);
+                }
             }
             popMenu.ShowAsContext();
         }
