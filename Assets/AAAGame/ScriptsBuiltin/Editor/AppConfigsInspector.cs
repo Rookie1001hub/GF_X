@@ -366,13 +366,15 @@ namespace UGF.EditorTools
                         GUILayout.BeginHorizontal();
                         gamePlayScenes[i].scenePath = GUILayout.TextField(gamePlayScenes[i].scenePath);
                         gamePlayScenes[i].sceneKeyword = GUILayout.TextField(gamePlayScenes[i].sceneKeyword);
-                        gamePlayScenes[i].sceneTypeTag = (GamePlaySceneType)EditorGUILayout.EnumPopup(gamePlayScenes[i].sceneTypeTag);
-                        if (GUILayout.Button("移除场景", GUILayout.Width(75)))
+                        gamePlayScenes[i].sceneTypeTag = (GamePlaySceneType)EditorGUILayout.EnumPopup(gamePlayScenes[i].sceneTypeTag, GUILayout.Width(100));
+                        if (GUILayout.Button("从快速切换移除场景", GUILayout.Width(175)))
                         {
                             var tempScene = gamePlayScenes[i];
                             gamePlayScenes.Remove(tempScene);
-                            AdjustEditorBuildScene(false, tempScene.scenePath);
+                            AdjustEditorBuildScene(false, tempScene);
                             SaveConfig(appConfig);
+                            var excelPath = UtilityBuiltin.AssetsPath.GetCombinePath(GameDataGenerator.GetGameDataExcelDir(GameDataType.Config), GamePlayConstEditor.GamePlaySceneConfig + ".xlsx");
+                            GameDataGenerator.ChangeGameConfigExcel(excelPath, gamePlayScenes.Where(e => e.sceneTypeTag == GamePlaySceneType.GamePlay).ToDictionary(e => e.sceneKeyword, e => e.scenePath));
                             break; // Exit the loop since the list has changed
                         }
                         GUILayout.EndHorizontal();
@@ -387,23 +389,43 @@ namespace UGF.EditorTools
                 GUILayout.BeginHorizontal();
                 // 输入新项的文本框
                 GUILayout.Label("场景资源路径");
-                newGamePlayScene = GUILayout.TextField(newGamePlayScene,GUILayout.MinWidth(250));
+                newGamePlayScene = GUILayout.TextField(newGamePlayScene, GUILayout.MinWidth(250));
                 GUILayout.Label("场景映射关键词");
                 newGamePlaySceneKeyword = GUILayout.TextField(newGamePlaySceneKeyword, GUILayout.MinWidth(250));
                 GUILayout.Label("场景标记定义");
                 // 绘制下拉框
-                gamePlaySceneType = (GamePlaySceneType)EditorGUILayout.EnumPopup(gamePlaySceneType);
+                gamePlaySceneType = (GamePlaySceneType)EditorGUILayout.EnumPopup(gamePlaySceneType, GUILayout.Width(100));
                 // 按钮添加新项
-                if (GUILayout.Button("增加场景", GUILayout.Width(75)))
+                if (GUILayout.Button("增加场景到快速切换", GUILayout.Width(175)))
                 {
                     var scenePair = new GamePlayScenePair(newGamePlayScene, newGamePlaySceneKeyword, gamePlaySceneType);
                     if (!string.IsNullOrEmpty(newGamePlayScene) && !gamePlayScenes.Any(e => e.scenePath == scenePair.scenePath))
                     {
                         gamePlayScenes.Add(scenePair);
-                        AdjustEditorBuildScene(true, newGamePlayScene);
+                        AdjustEditorBuildScene(true, scenePair);
                         SaveConfig(appConfig);
                         newGamePlayScene = "";
+                        newGamePlaySceneKeyword = "";
+                        var excelPath = UtilityBuiltin.AssetsPath.GetCombinePath(GameDataGenerator.GetGameDataExcelDir(GameDataType.Config), GamePlayConstEditor.GamePlaySceneConfig + ".xlsx");
+                        if (!File.Exists(excelPath))
+                        {
+                            if (GameDataGenerator.CreateGameConfigExcel(excelPath))
+                            {
+                                ReloadScrollView(appConfig);
+                                GameDataGenerator.ChangeGameConfigExcel(excelPath, gamePlayScenes.Where(e => e.sceneTypeTag == GamePlaySceneType.GamePlay).ToDictionary(e => e.sceneKeyword, e => e.scenePath));
+                                EditorUtility.RevealInFinder(excelPath);
+                                GUIUtility.ExitGUI();
+                            }
+                        }
+                        GameDataGenerator.ChangeGameConfigExcel(excelPath, gamePlayScenes.Where(e => e.sceneTypeTag == GamePlaySceneType.GamePlay).ToDictionary(e => e.sceneKeyword, e => e.scenePath));
                     }
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("导出场景常量脚本", GUILayout.Width(175)))
+                {
+                    GamePlayConstEditor.GenerateSceneConstScript(gamePlayScenes.Where(e => e.sceneTypeTag == GamePlaySceneType.GamePlay).ToDictionary(e => e.sceneKeyword, e => e.scenePath));
                 }
                 GUILayout.EndHorizontal();
             }
@@ -507,7 +529,7 @@ namespace UGF.EditorTools
             }
             cfg.GetType().GetField("mProcedures", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(cfg, selectedProcedures.ToArray());
             cfg.GetType().GetField("gamePlayScenes", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(cfg, gamePlayScenes.ToArray());
-            File.WriteAllText(ConstEditor.GamePlaySceneFile, UtilityBuiltin.Json.ToJson(gamePlayScenes));
+            File.WriteAllText(GamePlayConstEditor.GamePlaySceneFile, UtilityBuiltin.Json.ToJson(gamePlayScenes));
             EditorUtility.SetDirty(cfg);
             EditorUtility.SetDirty(AppSettings.Instance);
         }
@@ -517,7 +539,6 @@ namespace UGF.EditorTools
             {
                 item.Reload();
             }
-            LoadGamePlayScenes(cfg);
             ReloadProcedures(cfg);
         }
         private void ReloadProcedures(AppConfigs cfg)
@@ -533,46 +554,30 @@ namespace UGF.EditorTools
                 foreach (var proceClass in proceClassArr)
                 {
                     var proceName = proceClass.FullName;
-                    ArrayUtility.Add(ref procedures, new ItemData(cfg.Procedures==null?false: cfg.Procedures.Contains(proceName), proceName));
+                    ArrayUtility.Add(ref procedures, new ItemData(cfg.Procedures == null ? false : cfg.Procedures.Contains(proceName), proceName));
                 }
             }
             //#endif
-        }
-        /// <summary>
-        /// 获取GamePlay的场景配置数据
-        /// </summary>
-        /// <param name="cfg"></param>
-        private void LoadGamePlayScenes(AppConfigs cfg)
-        {
-            if (File.Exists(ConstEditor.GamePlaySceneFile))
-                gamePlayScenes = UtilityBuiltin.Json.ToObject<List<GamePlayScenePair>>(File.ReadAllText(ConstEditor.GamePlaySceneFile));
-            else
-                gamePlayScenes = new List<GamePlayScenePair>();
-            EditorBuildSettingsScene[] buildScenes = EditorBuildSettings.scenes;
-            foreach (var targetScene in gamePlayScenes)
-            {
-                if (!buildScenes.Any(e => e.path.Equals(targetScene)))
-                {
-                    EditorBuildSettingsScene newScene = new EditorBuildSettingsScene(targetScene.scenePath, true);
-                    ArrayUtility.Add(ref buildScenes, newScene);
-                    EditorBuildSettings.scenes = buildScenes;
-                }
-            }
         }
         /// <summary>
         /// 调整打包的场景
         /// </summary>
         /// <param name="add"></param>
         /// <param name="scenePath"></param>
-        private void AdjustEditorBuildScene(bool add, string scenePath)
+        private void AdjustEditorBuildScene(bool add, GamePlayScenePair gamePlayScenePair)
         {
+            var scenePath = gamePlayScenePair.scenePath;
             EditorBuildSettingsScene[] buildScenes = EditorBuildSettings.scenes;
             var condition = add ? !buildScenes.Any(e => e.path.Equals(scenePath)) : buildScenes.Any(e => e.path.Equals(scenePath));
             if (condition)
             {
                 EditorBuildSettingsScene newScene = new EditorBuildSettingsScene(scenePath, true);
                 if (add)
+                {
+                    if (gamePlayScenePair.sceneTypeTag != GamePlaySceneType.GamePlay)
+                        return;
                     ArrayUtility.Add(ref buildScenes, newScene);
+                }
                 else
                 {
                     var indexesToRemove = buildScenes

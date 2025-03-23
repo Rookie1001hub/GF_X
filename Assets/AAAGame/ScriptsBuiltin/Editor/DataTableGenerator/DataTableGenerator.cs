@@ -73,12 +73,12 @@ namespace GameFramework.Editor.DataTableTools
             codeContent.Replace("__DATA_TABLE_CLASS_NAME__", dataTableClassName);
             codeContent.Replace("__DATA_TABLE_COMMENT__", dataTableProcessor.GetValue(0, 1));
             codeContent.Replace("__DATA_TABLE_ID_COMMENT__", dataTableProcessor.GetComment(dataTableProcessor.IdColumn));
-            codeContent.Replace("__DATA_TABLE_PROPERTIES__", GenerateDataTableProperties(dataTableProcessor));
+            codeContent.Replace("__DATA_TABLE_PROPERTIES__", GenerateDataTableProperties(dataTableProcessor, userData));
             codeContent.Replace("__DATA_TABLE_PARSER__", GenerateDataTableParser(dataTableProcessor));
             //codeContent.Replace("__DATA_TABLE_PROPERTY_ARRAY__", GenerateDataTablePropertyArray(dataTableProcessor));
         }
 
-        private static string GenerateDataTableProperties(DataTableProcessor dataTableProcessor)
+        private static string GenerateDataTableProperties(DataTableProcessor dataTableProcessor, object userData)
         {
             StringBuilder stringBuilder = new StringBuilder();
             bool firstProperty = true;
@@ -108,10 +108,19 @@ namespace GameFramework.Editor.DataTableTools
                 string dataComment = dataTableProcessor.GetComment(i);
                 if (dataTypeKeyword == "enum")
                 {
-                    var firstEnumValue = dataTableProcessor.GetValue(4, i);
+                    //注意：这里如果遇到无法解析的行应当避开
+                    int startIndex = 4, errorNum = 0;
+                    var firstEnumValue = dataTableProcessor.GetValue(startIndex, i);
+                    //这样都获取不到说明你啥也不是 没填对表格嘛
+                    while (string.IsNullOrEmpty(firstEnumValue) && errorNum <= startIndex)
+                    {
+                        errorNum++;
+                        startIndex++;
+                        firstEnumValue = dataTableProcessor.GetValue(startIndex, i);
+                    }
                     if (!DataTableExtension.TryParseEnum(firstEnumValue, out Type enumType))
                     {
-                        GFBuiltin.LogError(Utility.Text.Format("解析枚举类型失败:{0}, 配置枚举格式为: EnumType.Item1", firstEnumValue));
+                        GFBuiltin.LogError(Utility.Text.Format("解析枚举类型失败:{0}, 配置枚举格式为: EnumType.Item1,文件路径为{1}", firstEnumValue, userData));
                         continue;
                     }
 
@@ -343,6 +352,6 @@ namespace GameFramework.Editor.DataTableTools
 
             return 0;
         }
-        
+
     }
 }

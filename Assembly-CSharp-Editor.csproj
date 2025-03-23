@@ -104,6 +104,7 @@
     <Compile Include="Assets\AAAGame\ScriptsBuiltin\Editor\DataTableGenerator\DataTableProcessor.Int2DArrayProcessor.cs" />
     <Compile Include="Assets\AAAGame\ScriptsBuiltin\Editor\DataTableGenerator\DataTableGenerator.cs" />
     <Compile Include="Assets\AAAGame\ScriptsBuiltin\Editor\DataTableGenerator\DataTableProcessor.EnumProcessor.cs" />
+    <Compile Include="Assets\AAAGame\GamePlay\Scripts\Editor\GamePlayConstEditor.cs" />
     <Compile Include="Assets\AAAGame\ScriptsBuiltin\Editor\DataTableGenerator\DataTableProcessor.Vector3ArrayProcessor.cs" />
     <Compile Include="Assets\AAAGame\ScriptsBuiltin\Editor\DataTableGenerator\DataTableProcessor.DataProcessorUtility.cs" />
     <Compile Include="Assets\AAAGame\ScriptsBuiltin\Editor\DataTableGenerator\DataTableProcessor.Float2DArrayProcessor.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="Assets\AAAGame\ScriptsBuiltin\Editor\DataTableGenerator\DataTableProcessor.StringArrayProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\AAAGame\GamePlay\Scripts\Editor\Configs\GamePlaySceneList.txt" />
     <None Include="Assets\AAAGame\ScriptsBuiltin\Editor\DataTableGenerator\DataTableCodeTemplate\DataTableCodeTemplate.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -1289,10 +1291,6 @@
       <Project>{CE941710-9532-C64F-9929-009FDC35EE5D}</Project>
       <Name>GameFramework</Name>
     </ProjectReference>
-    <ProjectReference Include="WaveEditor.csproj">
-      <Project>{303C5F96-332F-A964-C9DC-9D275A6375B7}</Project>
-      <Name>WaveEditor</Name>
-    </ProjectReference>
     <ProjectReference Include="ZString.csproj">
       <Project>{79165F85-04A5-CF99-0A12-B695E4867270}</Project>
       <Name>ZString</Name>
@@ -1328,6 +1326,10 @@
     <ProjectReference Include="UniTask.DOTween.csproj">
       <Project>{0876C798-CA0D-1DFF-A9EC-B3B3B05D050D}</Project>
       <Name>UniTask.DOTween</Name>
+    </ProjectReference>
+    <ProjectReference Include="WaveEditor.csproj">
+      <Project>{303C5F96-332F-A964-C9DC-9D275A6375B7}</Project>
+      <Name>WaveEditor</Name>
     </ProjectReference>
     <ProjectReference Include="UltimateJoystick.csproj">
       <Project>{1835FB8B-4BF2-F835-BB71-483807F0F8B5}</Project>

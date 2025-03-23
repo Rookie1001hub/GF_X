@@ -1,0 +1,23 @@
+﻿#	GamePlaySoundTable			
+#	ID		Group	AudioKey
+#	int		enum	string
+#		备注	音乐应当在的组	音源key值
+#	BGM			
+	1	通用背景音乐	SoundGroup.Music	music
+#	Sound			
+	2		SoundGroup.Sound	ability_popup
+	3		SoundGroup.Sound	bomb
+	4		SoundGroup.Sound	chest
+	5		SoundGroup.Sound	chest_opening
+	6		SoundGroup.Sound	chest_spawn
+	7		SoundGroup.Sound	click
+	8		SoundGroup.Sound	coin
+	9		SoundGroup.Sound	complete
+	10		SoundGroup.Sound	damage_taken
+	11		SoundGroup.Sound	failure
+	12		SoundGroup.Sound	gem_ring
+	13		SoundGroup.Sound	heal
+	14		SoundGroup.Sound	hit_pop
+	15		SoundGroup.Sound	level_up
+	16		SoundGroup.Sound	magnet
+	17		SoundGroup.Sound	revive

@@ -16,7 +16,9 @@ namespace OctoberStudio.UI
 #if UNITY_IOS
             return UnityEngine.iOS.Device.generation.ToString().Contains("iPad");
 #else
-            return Camera.main.aspect > (9f / 18f);
+            if (Camera.main != null)
+                return Camera.main.aspect > (9f / 18f);
+            return false;//Ä¬ÈÏÊúÆÁ
 #endif
         }
     }

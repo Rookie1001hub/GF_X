@@ -60,11 +60,11 @@
     <Analyzer Include="F:\UnityVersion\2022.3.53f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\AAAGame\GamePlay\Scripts\Wave\Editor\WaveEditor.cs" />
-    <Compile Include="Assets\AAAGame\GamePlay\Scripts\Wave\Editor\TestTrackEditor.cs" />
+    <Compile Include="Assets\AAAGame\GamePlay\Scripts\Runtime\Wave\Editor\WaveEditor.cs" />
+    <Compile Include="Assets\AAAGame\GamePlay\Scripts\Runtime\Wave\Editor\TestTrackEditor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\AAAGame\GamePlay\Scripts\Wave\Editor\WaveEditor.asmdef" />
+    <None Include="Assets\AAAGame\GamePlay\Scripts\Runtime\Wave\Editor\WaveEditor.asmdef" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

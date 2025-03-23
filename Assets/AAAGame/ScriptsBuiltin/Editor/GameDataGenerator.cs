@@ -83,6 +83,50 @@ namespace UGF.EditorTools
             }
 
         }
+        /// <summary>
+        /// 调整config文件
+        /// </summary>
+        /// <param name="excelPath"></param>
+        /// <param name="pairs"></param>
+        /// <returns></returns>
+        public static bool ChangeGameConfigExcel(string excelPath,Dictionary<string,string> pairs)
+        {
+            if (!File.Exists(excelPath))
+            {
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    using (var excel = new ExcelPackage(excelPath))
+                    {
+                        var sheet = excel.Workbook.Worksheets["Sheet 1"];
+                        int row = 2;
+                        for (int i = sheet.Dimension.End.Row; i >= row; i--)
+                        {
+                            if (sheet.Dimension.Rows > row) // 确保行存在
+                            {
+                                sheet.DeleteRow(i); // 删除行
+                            }
+                        }
+                        foreach (var item in pairs)
+                        {
+                            row++;
+                            sheet.Cells[row, 2].Value = item.Key;
+                            sheet.Cells[row, 4].Value = item.Value;
+                        }
+                        excel.Save();
+                    }
+                    return true;
+                }
+                catch (Exception emsg)
+                {
+                    Debug.LogError($"修改Excel:{excelPath}失败! Error:{emsg}");
+                    return false;
+                }
+            }
+        }
         public static bool CreateDataTableExcel(string excelPath)
         {
             if (File.Exists(excelPath))

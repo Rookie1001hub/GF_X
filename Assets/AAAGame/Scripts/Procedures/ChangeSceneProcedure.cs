@@ -4,6 +4,10 @@ using UnityGameFramework.Runtime;
 using GameFramework.Fsm;
 using GameFramework.Event;
 
+/// <summary>
+/// 调整场景流程
+/// 主要是为了方便重启还原一些内容
+/// </summary>
 public class ChangeSceneProcedure : ProcedureBase
 {
     /// <summary>
@@ -43,8 +47,7 @@ public class ChangeSceneProcedure : ProcedureBase
             throw new GameFrameworkException("未设置要加载的场景资源名!");
         }
         nextScene = procedureOwner.GetData<VarString>(P_SceneName);
-        procedureOwner.RemoveData(P_SceneName);
-        GF.Scene.LoadScene(UtilityBuiltin.AssetsPath.GetScenePath(nextScene), this);
+        GF.Scene.LoadScene(GF.Config.GetString(nextScene), this);
     }
 
     protected override void OnUpdate(IFsm<IProcedureManager> procedureOwner, float elapseSeconds, float realElapseSeconds)
@@ -54,14 +57,11 @@ public class ChangeSceneProcedure : ProcedureBase
         {
             return;
         }
-
+        procedureOwner.RemoveData(P_SceneName);
         //场景加载完成,根据不同场景切换对应Procedure
-        switch (nextScene)
+        if (nextScene == SceneConst.Scene_Menu)
         {
-            case "Game":
-                ChangeState<MenuProcedure>(procedureOwner);
-                //GF.Sound.PlayBGM("BillieEilishMusic.wav");
-                break;
+            ChangeState<MenuProcedure>(procedureOwner);
         }
     }
 

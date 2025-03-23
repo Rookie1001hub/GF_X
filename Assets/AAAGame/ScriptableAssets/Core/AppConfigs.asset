@@ -15,6 +15,7 @@ MonoBehaviour:
   m_LoadFromBytes: 0
   mDataTables:
   - CameraViewTable
+  - GamePlaySoundTable
   - LevelTable
   - Core/EntityGroupTable
   - Core/LanguagesTable
@@ -31,7 +32,4 @@ MonoBehaviour:
   - GameProcedure
   - MenuProcedure
   - PreloadProcedure
-  gamePlayScenes:
-  - scenePath: Assets/AAAGame/GamePlay/Scenes/Game.unity
-    sceneKeyword: Game
-    sceneTypeTag: 0
+  gamePlayScenes: []

@@ -1,0 +1,3 @@
+﻿#	SceneConfig		
+#	Key	备注	Value
+	Menu		Assets/AAAGame/GamePlay/Scenes/Menu.unity
