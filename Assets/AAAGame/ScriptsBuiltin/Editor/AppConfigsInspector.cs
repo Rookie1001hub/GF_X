@@ -11,6 +11,7 @@ using System;
 using UnityEditor.SceneManagement;
 using UnityGameFramework.Runtime;
 using UnityEngine.UI;
+using System.Reflection;
 
 namespace UGF.EditorTools
 {
@@ -502,6 +503,13 @@ namespace UGF.EditorTools
                     AssetDatabase.SaveAssetIfDirty(gfExtensionPrefab);
                 }
             }
+            //设置Game窗口分辨率
+            Assembly assembly = typeof(UnityEditor.EditorWindow).Assembly;
+            Type type = assembly.GetType("UnityEditor.GameView");
+            var gameView = UnityEditor.EditorWindow.GetWindow(type);
+            var method = type.GetMethod("SetCustomResolution", BindingFlags.NonPublic | BindingFlags.Instance);
+            method.Invoke(gameView, new object[] { new Vector2(designResolution.x, designResolution.y), $"{designResolution.x}x{designResolution.y}"});
+
         }
 
         private void SaveConfig(AppConfigs cfg)
