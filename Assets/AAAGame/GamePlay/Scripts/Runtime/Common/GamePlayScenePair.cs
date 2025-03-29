@@ -32,8 +32,17 @@ public enum GamePlaySceneType
 [Serializable]
 public class GamePlayScenePair
 {
+    /// <summary>
+    /// 场景路径
+    /// </summary>
     public string scenePath;
+    /// <summary>
+    /// 场景关键字
+    /// </summary>
     public string sceneKeyword;
+    /// <summary>
+    /// 场景类型
+    /// </summary>
     public GamePlaySceneType sceneTypeTag;
     public GamePlayScenePair(string path, string keyword, GamePlaySceneType sceneType)
     {
