@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/AAAGame/GamePlay/Scripts/Editor/GamePlayTools/GamePlayTools.uss?fileID=7433441132597879392&amp;guid=7219259d5e239f140a4c1a9e58405ed7&amp;type=3#GamePlayTools" />
-    <ui:EnumField label="配置类型" type="UnityEngine.TextAlignment, UnityEngine.TextRenderingModule" value="Center" name="ConfigType" style="-unity-font-style: italic; font-size: 20px; -unity-text-align: upper-center; white-space: normal;" />
-    <ui:ScrollView name="Content" />
-    <ui:Button text="生成" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Generate" />
+    <ui:EnumField label="配置类型" type="UnityEngine.TextAlignment, UnityEngine.TextRenderingModule" value="Center" name="ConfigType" style="-unity-font-style: bold; font-size: 20px; -unity-text-align: middle-left; white-space: normal; align-items: auto; align-self: auto; justify-content: flex-start;" />
+    <ui:ScrollView name="Content" style="-unity-text-align: upper-center;" />
+    <ui:Button text="生成" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Generate" style="-unity-font-style: bold; font-size: 20px;" />
 </ui:UXML>

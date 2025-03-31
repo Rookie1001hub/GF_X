@@ -20,14 +20,20 @@ public static class GamePlayConstEditor
     /// </summary>
     public static readonly string GamePlaySceneFile = "Assets/AAAGame/GamePlay/Scripts/Editor/Configs/GamePlaySceneList.txt";
     /// <summary>
+    /// GamePlay的AudioConfig列表
+    /// </summary>
+    public static readonly string GamePlayAudioConfigFile = "Assets/AAAGame/GamePlay/Scripts/Editor/Configs/GamePlayAudioConfigFile.txt";
+    /// <summary>
     ///  GamePlaySceneConfig
     /// </summary>
     public static readonly string GamePlaySceneConfig = "SceneConfig";
-
     /// <summary>
     /// 场景常量脚本
     /// </summary>
     public static readonly string SceneConstScript = "Assets/AAAGame/GamePlay/Scripts/Runtime/Common/SceneConst.cs";
+
+
+
     /// <summary>
     /// 生成场景常量脚本
     /// </summary>

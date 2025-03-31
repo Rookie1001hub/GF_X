@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UGF.EditorTools;
 using UnityEditor;
@@ -19,6 +20,9 @@ public class GamePlayTools : EditorToolBase
 
 
     ScrollView Content;
+
+    //音频数据列表
+    List<GamePlayAudioConfig> gamePlayAudioConfigs = new List<GamePlayAudioConfig>();
 
     public void CreateGUI()
     {
@@ -54,30 +58,36 @@ public class GamePlayTools : EditorToolBase
     {
         if ((EGamePlayConfigType)evt.newValue == EGamePlayConfigType.Audio)
         {
-            MakeAudioConfig();
+            //获取数据
+            
+            //生成元素
+            MakeAudioConfigEle();
         }
     }
-    private void MakeAudioConfig()
+    private void MakeAudioConfigEle()
     {
         Content.Clear();
+        VisualElement top = new VisualElement();
         //头部
         {
             var label = new Label();
             label.text = "配置音频";
-            //label.style.width = 90;
-            label.style.unityTextAlign = TextAnchor.LowerLeft;
-            Content.Add(label);
+            label.style.fontSize = 18;
+            label.style.unityTextAlign = TextAnchor.MiddleLeft;
+            top.Add(label);
         }
         var button = new Button();
         button.name = "Add";
         button.text = "+";
-        button.style.unityTextAlign = TextAnchor.UpperRight;
-        button.style.flexGrow = 0f;
+        button.style.fontSize = 18;
+        button.style.unityTextAlign = TextAnchor.MiddleRight;
         button.clicked += ()=>{
 
             Content.Add(MakeAudioConfigElement());
         } ;
-        Content.Add(button);
+        top.Add(button);
+        top.style.flexDirection = FlexDirection.Row;
+        Content.Add(top);
     }
 
     private void Button_clicked()
