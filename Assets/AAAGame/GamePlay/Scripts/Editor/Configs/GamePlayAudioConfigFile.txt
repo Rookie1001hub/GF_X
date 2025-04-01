@@ -1,0 +1,1 @@
+﻿[{"audioPath":"Assets/AAAGame/Audio","audionGUID":"ac7fef1038e124b4aa9279161ca32c8f","audioKeyword":"test","soundGroup":"Music","volume":0.1,"pitch":0.2}]

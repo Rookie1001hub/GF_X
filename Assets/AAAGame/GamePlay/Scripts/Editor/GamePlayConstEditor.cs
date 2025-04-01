@@ -20,11 +20,7 @@ public static class GamePlayConstEditor
     /// </summary>
     public static readonly string GamePlaySceneFile = "Assets/AAAGame/GamePlay/Scripts/Editor/Configs/GamePlaySceneList.txt";
     /// <summary>
-    /// GamePlay的AudioConfig列表
-    /// </summary>
-    public static readonly string GamePlayAudioConfigFile = "Assets/AAAGame/GamePlay/Scripts/Editor/Configs/GamePlayAudioConfigFile.txt";
-    /// <summary>
-    ///  GamePlaySceneConfig
+    ///  GamePlaySceneConfig的配置表名称
     /// </summary>
     public static readonly string GamePlaySceneConfig = "SceneConfig";
     /// <summary>
@@ -32,7 +28,19 @@ public static class GamePlayConstEditor
     /// </summary>
     public static readonly string SceneConstScript = "Assets/AAAGame/GamePlay/Scripts/Runtime/Common/SceneConst.cs";
 
+    /// <summary>
+    /// GamePlay的AudioConfig列表
+    /// </summary>
+    public static readonly string GamePlayAudioConfigFile = "Assets/AAAGame/GamePlay/Scripts/Editor/Configs/GamePlayAudioConfigFile.txt";
+    /// <summary>
+    ///  GamePlayAudioTable的配置表名称
+    /// </summary>
+    public static readonly string GamePlayAudioTable = "GamePlayAudioTable";
 
+    /// <summary>
+    /// 音频常量脚本
+    /// </summary>
+    public static readonly string AudioConstScript = "Assets/AAAGame/GamePlay/Scripts/Runtime/Common/AudioConst.cs";
 
     /// <summary>
     /// 生成场景常量脚本
@@ -62,6 +70,34 @@ public static class GamePlayConstEditor
         }
         stringBuilder.AppendLine("}");
         File.WriteAllText(SceneConstScript, stringBuilder.ToString());
+        AssetDatabase.Refresh();
+    }
+    /// <summary>
+    /// 生成Audio常量脚本
+    /// </summary>
+    /// <param name="audioConfigs"></param>
+    public static void GenerateAudioConstScript(List<GamePlayAudioConfig> audioConfigs)
+    {
+        var dir = Path.GetDirectoryName(AudioConstScript);
+        if (!Directory.Exists(dir))
+        {
+            Directory.CreateDirectory(dir);
+        }
+        var stringBuilder = new StringBuilder();
+        stringBuilder
+                   .AppendLine("//------------------------------------------------------------")
+                   .AppendLine("//------------------------------------------------------------")
+                   .AppendLine("// 此文件由工具自动生成，请勿直接修改。")
+                   .AppendLine("//------------------------------------------------------------")
+                   .AppendLine()
+                   .AppendLine("/// <summary>")
+                   .AppendLine("/// 场景常量标记")
+                   .AppendLine("/// </summary>")
+                   .AppendLine("public static class SceneConst")
+                   .AppendLine("{");
+       
+        stringBuilder.AppendLine("}");
+        File.WriteAllText(AudioConstScript, stringBuilder.ToString());
         AssetDatabase.Refresh();
     }
 }

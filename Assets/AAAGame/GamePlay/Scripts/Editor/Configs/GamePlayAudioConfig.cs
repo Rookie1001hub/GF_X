@@ -19,6 +19,10 @@ public class GamePlayAudioConfig
     /// </summary>
     public string audioPath;
     /// <summary>
+    /// 音频资源的guid
+    /// </summary>
+    public string audionGUID;
+    /// <summary>
     /// 音频关键字
     /// </summary>
     public string audioKeyword;
@@ -34,4 +38,9 @@ public class GamePlayAudioConfig
     /// 音频的音高
     /// </summary>
     public float pitch;
+    
+    public GamePlayAudioConfig()
+    {
+        audioPath = audioKeyword = "";
+    }
 }

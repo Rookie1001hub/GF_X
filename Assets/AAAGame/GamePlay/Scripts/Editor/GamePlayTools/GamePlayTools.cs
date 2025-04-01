@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UGF.EditorTools;
 using UnityEditor;
@@ -19,7 +20,7 @@ public class GamePlayTools : EditorToolBase
     public override Vector2Int WinSize => new Vector2Int(600, 800);
 
 
-    ScrollView Content;
+    ScrollView Content; EnumField configTypeEnum;
 
     //音频数据列表
     List<GamePlayAudioConfig> gamePlayAudioConfigs = new List<GamePlayAudioConfig>();
@@ -33,7 +34,7 @@ public class GamePlayTools : EditorToolBase
         VisualElement labelFromUXML = m_VisualTreeAsset.Instantiate();
         root.Add(labelFromUXML);
         //获取配置选择框
-        var configTypeEnum = labelFromUXML.Q<EnumField>("ConfigType");
+        configTypeEnum = labelFromUXML.Q<EnumField>("ConfigType");
         configTypeEnum.Init(EGamePlayConfigType.None);
         configTypeEnum.RegisterCallback<ChangeEvent<Enum>>(OnConfigTypeChange);
         //获取中间展示的滚动组
@@ -52,19 +53,28 @@ public class GamePlayTools : EditorToolBase
     /// </summary>
     private void GenerateBtn_onClick()
     {
-
+        if ((EGamePlayConfigType)configTypeEnum.value == EGamePlayConfigType.Audio)
+        {
+            //写数据
+            File.WriteAllText(GamePlayConstEditor.GamePlayAudioConfigFile, UtilityBuiltin.Json.ToJson(gamePlayAudioConfigs));
+            //生成配置常量 
+            
+            //生成excel
+        }
+        AssetDatabase.Refresh();
     }
     private void OnConfigTypeChange(ChangeEvent<Enum> evt)
     {
         if ((EGamePlayConfigType)evt.newValue == EGamePlayConfigType.Audio)
         {
             //获取数据
-            
+            if (File.Exists(GamePlayConstEditor.GamePlayAudioConfigFile))
+                gamePlayAudioConfigs = UtilityBuiltin.Json.ToObject<List<GamePlayAudioConfig>>(File.ReadAllText(GamePlayConstEditor.GamePlayAudioConfigFile));
             //生成元素
-            MakeAudioConfigEle();
+            MakeAudioConfigEle(gamePlayAudioConfigs);
         }
     }
-    private void MakeAudioConfigEle()
+    private void MakeAudioConfigEle(List<GamePlayAudioConfig> audioConfigs)
     {
         Content.Clear();
         VisualElement top = new VisualElement();
@@ -81,25 +91,28 @@ public class GamePlayTools : EditorToolBase
         button.text = "+";
         button.style.fontSize = 18;
         button.style.unityTextAlign = TextAnchor.MiddleRight;
-        button.clicked += ()=>{
-
-            Content.Add(MakeAudioConfigElement());
-        } ;
+        button.clicked += () =>
+        {
+            var config = new GamePlayAudioConfig();
+            audioConfigs.Add(config);
+            Content.Add(MakeAudioConfigElement(config));
+        };
         top.Add(button);
         top.style.flexDirection = FlexDirection.Row;
         Content.Add(top);
+        foreach (var item in audioConfigs)
+        {
+            Content.Add(MakeAudioConfigElement(item));
+        }
     }
 
-    private void Button_clicked()
-    {
-        throw new NotImplementedException();
-    }
+
 
     /// <summary>
     /// 生成音频配置元素
     /// </summary>
     /// <returns></returns>
-    private VisualElement MakeAudioConfigElement()
+    private VisualElement MakeAudioConfigElement(GamePlayAudioConfig config)
     {
         VisualElement element = new VisualElement();
         //元素上部
@@ -124,45 +137,76 @@ public class GamePlayTools : EditorToolBase
             objectField.name = "AudioPath";
             objectField.label = "AudioPath";
             objectField.objectType = typeof(UnityEngine.Object);
+            if (!string.IsNullOrEmpty(config.audioPath))
+            {
+                var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(config.audioPath);
+                objectField.SetValueWithoutNotify(obj);
+                objectField.value.name = config.audioPath;
+            }
             objectField.style.unityTextAlign = TextAnchor.MiddleLeft;
             objectField.style.flexGrow = 1f;
             elementTop.Add(objectField);
             var label = objectField.Q<Label>();
             label.style.minWidth = 63;
+            objectField.RegisterValueChangedCallback(evt =>
+            {
+                config.audioPath = AssetDatabase.GetAssetPath(evt.newValue);
+                config.audionGUID = AssetDatabase.AssetPathToGUID(config.audioPath);
+            });
         }
         {
             var popupField = new PopupField<string>(Enum.GetNames(typeof(Const.SoundGroup)).ToList(), 0);
             popupField.name = "SoundGroup";
+            popupField.value = config.soundGroup.ToString();
             popupField.style.unityTextAlign = TextAnchor.MiddleLeft;
             popupField.style.width = 150;
             elementBottom.Add(popupField);
+            popupField.RegisterValueChangedCallback(evt =>
+            {
+                config.soundGroup = Enum.Parse<Const.SoundGroup>(evt.newValue);
+            });
         }
         {
             var textField = new TextField();
             textField.name = "AudioKeyword";
             textField.label = "AudioKeyword";
             textField.style.width = 200;
+            textField.value = config.audioKeyword;
             elementBottom.Add(textField);
             var label = textField.Q<Label>();
             label.style.minWidth = 63;
+            textField.RegisterValueChangedCallback(evt =>
+            {
+                config.audioKeyword = evt.newValue;
+            });
         }
         {
             var floatField = new FloatField();
             floatField.name = "Volume";
             floatField.label = "Volume";
             floatField.style.width = 200;
+            floatField.value = config.volume;
             elementBottom.Add(floatField);
             var label = floatField.Q<Label>();
             label.style.minWidth = 63;
+            floatField.RegisterValueChangedCallback(evt =>
+            {
+                config.volume = evt.newValue;
+            });
         }
         {
             var floatField = new FloatField();
             floatField.name = "Pitch";
             floatField.label = "Pitch";
             floatField.style.width = 200;
+            floatField.value = config.pitch;
             elementBottom.Add(floatField);
             var label = floatField.Q<Label>();
             label.style.minWidth = 63;
+            floatField.RegisterValueChangedCallback(evt =>
+            {
+                config.pitch = evt.newValue;
+            });
         }
         GroupBox groupBox = new GroupBox();
         groupBox.Add(elementTop);
