@@ -10,6 +10,8 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using UnityEditor;
+using System.Linq;
+using OfficeOpenXml;
 /// <summary>
 /// GamePlay编辑器常量
 /// </summary>
@@ -66,7 +68,7 @@ public static class GamePlayConstEditor
                    .AppendLine("{");
         foreach (var item in pairs)
         {
-            stringBuilder.AppendLine($"\tpublic static readonly string Scene_{item.Key} = \"{item.Key}\";");
+            stringBuilder.AppendLine($"\tpublic static readonly string  {item.Key} = \"{item.Key}\";");
         }
         stringBuilder.AppendLine("}");
         File.WriteAllText(SceneConstScript, stringBuilder.ToString());
@@ -93,11 +95,83 @@ public static class GamePlayConstEditor
                    .AppendLine("/// <summary>")
                    .AppendLine("/// 场景常量标记")
                    .AppendLine("/// </summary>")
-                   .AppendLine("public static class SceneConst")
+                   .AppendLine("public static class AudioConst")
                    .AppendLine("{");
-       
+        foreach (var item in audioConfigs)
+        {
+            //TODO:嵌套梳理
+            //是一个文件夹
+            if (AssetDatabase.IsValidFolder(item.audioPath))
+            {
+                var filesGuid = AssetDatabase.FindAssets("", new string[] { item.audioPath });
+                foreach (var guid in filesGuid)
+                {
+                    var path = AssetDatabase.GUIDToAssetPath(guid);
+                    if (!IsValidAudio(item.soundGroup.ToString(), Path.GetFileNameWithoutExtension(path), path, stringBuilder))
+                        continue;
+                }
+            }
+            else
+            {
+                if (!IsValidAudio(item.soundGroup.ToString(), Path.GetFileNameWithoutExtension(item.audioPath), item.audioPath, stringBuilder))
+                    continue;
+            }
+        }
         stringBuilder.AppendLine("}");
         File.WriteAllText(AudioConstScript, stringBuilder.ToString());
         AssetDatabase.Refresh();
+
+        bool IsValidAudio(string k1, string k2, string path, StringBuilder builder)
+        {
+            var suffix = Path.GetExtension(path).TrimStart('.');
+            if (!Enum.GetNames(typeof(EAudioSuffix)).Contains(suffix))
+                return false;
+            builder.AppendLine($"\tpublic static readonly string {k1}_{k2} = \"{k1}_{k2}\";");
+            return true;
+        }
+    }
+    /// <summary>
+    /// 调整GamePlayAudioTable.xlsx文件
+    /// </summary>
+    /// <param name="excelPath"></param>
+    /// <param name="pairs"></param>
+    /// <returns></returns>
+    public static bool ChangeGameConfigExcel(string excelPath, GamePlayAudioConfig config)
+    {
+        if (!File.Exists(excelPath))
+        {
+            return false;
+        }
+        else
+        {
+            try
+            {
+                using (var excel = new ExcelPackage(excelPath))
+                {
+                    var sheet = excel.Workbook.Worksheets["Sheet 1"];
+                    int row = 2;
+                    for (int i = sheet.Dimension.End.Row; i >= row; i--)
+                    {
+                        if (sheet.Dimension.Rows > row) // 确保行存在
+                        {
+                            sheet.DeleteRow(i); // 删除行
+                        }
+                    }
+                    foreach (var item in pairs)
+                    {
+                        row++;
+                        sheet.Cells[row, 2].Value = item.Key;
+                        sheet.Cells[row, 4].Value = item.Value;
+                    }
+                    excel.Save();
+                }
+                return true;
+            }
+            catch (Exception emsg)
+            {
+                Debug.LogError($"修改Excel:{excelPath}失败! Error:{emsg}");
+                return false;
+            }
+        }
     }
 }

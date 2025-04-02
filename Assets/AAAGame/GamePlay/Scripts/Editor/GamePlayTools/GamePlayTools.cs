@@ -58,7 +58,7 @@ public class GamePlayTools : EditorToolBase
             //写数据
             File.WriteAllText(GamePlayConstEditor.GamePlayAudioConfigFile, UtilityBuiltin.Json.ToJson(gamePlayAudioConfigs));
             //生成配置常量 
-            
+            GamePlayConstEditor.GenerateAudioConstScript(gamePlayAudioConfigs);
             //生成excel
         }
         AssetDatabase.Refresh();
@@ -130,6 +130,11 @@ public class GamePlayTools : EditorToolBase
             button.text = "-";
             button.style.unityTextAlign = TextAnchor.MiddleLeft;
             button.style.flexGrow = 0f;
+            button.clicked += () =>
+            {
+                gamePlayAudioConfigs.Remove(config);
+                MakeAudioConfigEle(gamePlayAudioConfigs);
+            };
             elementTop.Add(button);
         }
         {
@@ -270,4 +275,12 @@ public enum EAssetFileExtension
     shader,
     ttf,
     cs,
+}
+/// <summary>
+/// 音频尾缀格式
+/// </summary>
+public enum EAudioSuffix
+{
+    wav,
+    mp3
 }
