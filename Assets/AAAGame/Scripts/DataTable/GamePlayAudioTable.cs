@@ -14,9 +14,9 @@ using UnityGameFramework.Runtime;
 
 [System.Reflection.Obfuscation(Feature = "renaming", ApplyToMembers = false)]
 /// <summary>
-/// GamePlaySoundTable
+/// GamePlayAudioTable
 /// </summary>
-public class GamePlaySoundTable : DataRowBase
+public class GamePlayAudioTable : DataRowBase
 {
 	private int m_Id = 0;
 	/// <summary>
@@ -28,18 +28,54 @@ public class GamePlaySoundTable : DataRowBase
     }
 
         /// <summary>
-        /// 音乐应当在的组
+        /// 请添加字段, 字段名首字母大写
         /// </summary>
-        public Const.SoundGroup Group
+        public string AudioPath
         {
             get;
             private set;
         }
 
         /// <summary>
-        /// 音源key值
+        /// 
         /// </summary>
-        public string AudioKey
+        public string AudionGUID
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string AudioKeyword
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Const.SoundGroup SoundGroup
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public float Volume
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public float Pitch
         {
             get;
             private set;
@@ -57,7 +93,12 @@ public class GamePlaySoundTable : DataRowBase
             index++;
             m_Id = int.Parse(columnStrings[index++]);
             index++;
-            AudioKey = columnStrings[index++];
+            AudioPath = columnStrings[index++];
+            AudionGUID = columnStrings[index++];
+            AudioKeyword = columnStrings[index++];
+            SoundGroup = DataTableExtension.ParseEnum<Const.SoundGroup>(columnStrings[index++]);
+            Volume = float.Parse(columnStrings[index++]);
+            Pitch = float.Parse(columnStrings[index++]);
 
             return true;
         }
@@ -69,7 +110,12 @@ public class GamePlaySoundTable : DataRowBase
                 using (BinaryReader binaryReader = new BinaryReader(memoryStream, Encoding.UTF8))
                 {
                     m_Id = binaryReader.Read7BitEncodedInt32();
-                    AudioKey = binaryReader.ReadString();
+                    AudioPath = binaryReader.ReadString();
+                    AudionGUID = binaryReader.ReadString();
+                    AudioKeyword = binaryReader.ReadString();
+                    SoundGroup = binaryReader.ReadEnum<Const.SoundGroup>();
+                    Volume = binaryReader.ReadSingle();
+                    Pitch = binaryReader.ReadSingle();
                 }
             }
 

@@ -260,7 +260,7 @@ namespace UGF.EditorTools
                     Debug.LogWarning($"创建Config失败, 文件已存在:{excelPath}");
                     return;
                 }
-                if (GameDataGenerator.CreateGameConfigExcel(excelPath))
+                if (GamePlayConstEditor.CreateGameConfigExcel(excelPath))
                 {
                     Reload();
                     EditorUtility.RevealInFinder(excelPath);
@@ -375,7 +375,7 @@ namespace UGF.EditorTools
                             AdjustEditorBuildScene(false, tempScene);
                             SaveConfig(appConfig);
                             var excelPath = UtilityBuiltin.AssetsPath.GetCombinePath(GameDataGenerator.GetGameDataExcelDir(GameDataType.Config), GamePlayConstEditor.GamePlaySceneConfig + ".xlsx");
-                            GameDataGenerator.ChangeGameConfigExcel(excelPath, gamePlayScenes.Where(e => e.sceneTypeTag == GamePlaySceneType.GamePlay).ToDictionary(e => e.sceneKeyword, e => e.scenePath));
+                            GamePlayConstEditor.ChangeGameConfigExcel(excelPath, gamePlayScenes.Where(e => e.sceneTypeTag == GamePlaySceneType.GamePlay).ToDictionary(e => e.sceneKeyword, e => e.scenePath));
                             break; // Exit the loop since the list has changed
                         }
                         GUILayout.EndHorizontal();
@@ -410,15 +410,15 @@ namespace UGF.EditorTools
                         var excelPath = UtilityBuiltin.AssetsPath.GetCombinePath(GameDataGenerator.GetGameDataExcelDir(GameDataType.Config), GamePlayConstEditor.GamePlaySceneConfig + ".xlsx");
                         if (!File.Exists(excelPath))
                         {
-                            if (GameDataGenerator.CreateGameConfigExcel(excelPath))
+                            if (GamePlayConstEditor.CreateGameConfigExcel(excelPath))
                             {
                                 ReloadScrollView(appConfig);
-                                GameDataGenerator.ChangeGameConfigExcel(excelPath, gamePlayScenes.Where(e => e.sceneTypeTag == GamePlaySceneType.GamePlay).ToDictionary(e => e.sceneKeyword, e => e.scenePath));
+                                GamePlayConstEditor.ChangeGameConfigExcel(excelPath, gamePlayScenes.Where(e => e.sceneTypeTag == GamePlaySceneType.GamePlay).ToDictionary(e => e.sceneKeyword, e => e.scenePath));
                                 EditorUtility.RevealInFinder(excelPath);
                                 GUIUtility.ExitGUI();
                             }
                         }
-                        GameDataGenerator.ChangeGameConfigExcel(excelPath, gamePlayScenes.Where(e => e.sceneTypeTag == GamePlaySceneType.GamePlay).ToDictionary(e => e.sceneKeyword, e => e.scenePath));
+                        GamePlayConstEditor.ChangeGameConfigExcel(excelPath, gamePlayScenes.Where(e => e.sceneTypeTag == GamePlaySceneType.GamePlay).ToDictionary(e => e.sceneKeyword, e => e.scenePath));
                     }
                 }
                 GUILayout.EndHorizontal();

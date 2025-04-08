@@ -15,7 +15,6 @@ MonoBehaviour:
   m_LoadFromBytes: 0
   mDataTables:
   - CameraViewTable
-  - GamePlaySoundTable
   - LevelTable
   - Core/EntityGroupTable
   - Core/LanguagesTable

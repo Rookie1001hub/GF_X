@@ -60,6 +60,9 @@ public class GamePlayTools : EditorToolBase
             //生成配置常量 
             GamePlayConstEditor.GenerateAudioConstScript(gamePlayAudioConfigs);
             //生成excel
+            var excelDir = GameDataGenerator.GetGameDataExcelDir(GameDataType.DataTable);
+            GamePlayConstEditor.ChangeGameConfigExcel(excelDir + "/" + GamePlayConstEditor.GamePlayAudioTable + ".xlsx", gamePlayAudioConfigs);
+
         }
         AssetDatabase.Refresh();
     }
