@@ -20,4 +20,8 @@ public partial class MenuUIForm
 	[SerializeField] protected TextMeshProUGUI varGoldText = null;
 	[SerializeField] protected Button varLeftButton = null;
 	[SerializeField] protected Button varRightButton = null;
+	[SerializeField] protected GameObject varUpgradesWindow = null;
+	[SerializeField] protected GameObject varCharactersWindow = null;
+	[SerializeField] protected Button varUpgradBackBtn = null;
+	[SerializeField] protected Button varChaBackBtn = null;
 }

@@ -870,7 +870,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 816827548983803684, guid: 7dfbe892154909b41aea43c2840561fd, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 939537393383497307, guid: 7dfbe892154909b41aea43c2840561fd, type: 3}
       propertyPath: m_Pivot.x
@@ -969,7 +969,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7dfbe892154909b41aea43c2840561fd, type: 3}
---- !u!1001 &2102248960210791215
+--- !u!1001 &4294901084654641457
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -1061,10 +1061,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: MenuUIForm
       objectReference: {fileID: 0}
-    - target: {fileID: 6920705628069149804, guid: 3fdcbb5b7d730f341bf585839b5502a5, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1086,4 +1082,4 @@ SceneRoots:
   - {fileID: 2130119866}
   - {fileID: 157599325}
   - {fileID: 1754295058}
-  - {fileID: 2102248960210791215}
+  - {fileID: 4294901084654641457}
