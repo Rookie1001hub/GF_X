@@ -80,9 +80,58 @@ namespace GameFramework.Resource
 
                 m_CurrentVariant = currentVariant;
                 m_IgnoreOtherVariant = ignoreOtherVariant;
+#if UNITY_WEBGL
+                var rwRemoteVersionListFileName = Path.Combine(m_ResourceManager.m_ReadWritePath, RemoteVersionListFileName);
+                try
+                {
+                    using (FileStream fileStream = new FileStream(rwRemoteVersionListFileName, FileMode.Open, FileAccess.Read))
+                    {
+                        byte[] bytes = new byte[fileStream.Length];
+                        int bytesRead = fileStream.Read(bytes, 0, (int)fileStream.Length);
+                        if (bytesRead != fileStream.Length)
+                        {
+                            OnLoadUpdatableVersionListFailure(rwRemoteVersionListFileName, "未完整读取文件内容", null);
+                        }
+                        else
+                            OnLoadUpdatableVersionListSuccess(rwRemoteVersionListFileName, bytes, 0, null);
+                    }
+                }
+                catch (Exception)
+                {
+                    OnLoadUpdatableVersionListFailure(rwRemoteVersionListFileName, "未能读取文件内容", null);
+                }
+                m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadOnlyPath, LocalVersionListFileName)), new LoadBytesCallbacks(OnLoadReadOnlyVersionListSuccess, OnLoadReadOnlyVersionListFailure), null);
+                var rwLocalVersionListFileName = Path.Combine(m_ResourceManager.m_ReadWritePath, LocalVersionListFileName);
+                if (m_ResourceManager.CheckVersionListResult == CheckVersionListResult.Updated)
+                {
+                    try
+                    {
+                        using (FileStream fileStream = new FileStream(rwLocalVersionListFileName, FileMode.Open, FileAccess.Read))
+                        {
+                            byte[] bytes = new byte[fileStream.Length];
+                            int bytesRead = fileStream.Read(bytes, 0, (int)fileStream.Length);
+                            if (bytesRead != fileStream.Length)
+                            {
+                                OnLoadReadWriteVersionListFailure(rwRemoteVersionListFileName, "未完整读取文件内容", null);
+                            }
+                            else
+                                OnLoadReadWriteVersionListSuccess(rwRemoteVersionListFileName, bytes, 0, null);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        OnLoadReadWriteVersionListFailure(rwRemoteVersionListFileName, "未能读取文件内容", null);
+                    }
+                }
+                else if (m_ResourceManager.CheckVersionListResult == CheckVersionListResult.NeedUpdate)
+                {
+                    OnLoadReadWriteVersionListFailure(rwRemoteVersionListFileName, "直接放弃现有内容", null);
+                }
+#else
                 m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadWritePath, RemoteVersionListFileName)), new LoadBytesCallbacks(OnLoadUpdatableVersionListSuccess, OnLoadUpdatableVersionListFailure), null);
                 m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadOnlyPath, LocalVersionListFileName)), new LoadBytesCallbacks(OnLoadReadOnlyVersionListSuccess, OnLoadReadOnlyVersionListFailure), null);
                 m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadWritePath, LocalVersionListFileName)), new LoadBytesCallbacks(OnLoadReadWriteVersionListSuccess, OnLoadReadWriteVersionListFailure), null);
+#endif
             }
 
             private void SetCachedFileSystemName(ResourceName resourceName, string fileSystemName)

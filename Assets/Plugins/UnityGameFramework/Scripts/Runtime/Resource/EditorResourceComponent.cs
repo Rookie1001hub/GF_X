@@ -486,6 +486,20 @@ namespace UnityGameFramework.Runtime
                 return m_LoadAssetInfos.Count;
             }
         }
+        /// <summary>
+        /// 检查版本文件的结果
+        /// </summary>
+        public CheckVersionListResult CheckVersionListResult
+        {
+            get
+            {
+                throw new NotSupportedException("CheckVersionListResult");
+            }
+            set
+            {
+                throw new NotSupportedException("CheckVersionListResult");
+            }
+        }
 
 #pragma warning disable 0067, 0414
 

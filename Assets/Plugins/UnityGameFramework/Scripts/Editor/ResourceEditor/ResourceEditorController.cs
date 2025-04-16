@@ -6,6 +6,7 @@
 //------------------------------------------------------------
 
 using GameFramework;
+using GameFramework.Resource;
 using System;
 using System.Collections.Generic;
 using System.IO;

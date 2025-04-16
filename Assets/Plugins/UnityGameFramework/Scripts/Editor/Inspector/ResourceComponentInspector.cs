@@ -6,6 +6,7 @@
 //------------------------------------------------------------
 
 using GameFramework;
+using GameFramework.Resource;
 using System;
 using System.IO;
 using System.Reflection;
@@ -34,6 +35,7 @@ namespace UnityGameFramework.Editor
         private SerializedProperty m_ResourceExpireTime = null;
         private SerializedProperty m_ResourcePriority = null;
         private SerializedProperty m_UpdatePrefixUri = null;
+        private SerializedProperty m_CheckVersionListResult = null;
         private SerializedProperty m_GenerateReadWriteVersionListLength = null;
         private SerializedProperty m_UpdateRetryCount = null;
         private SerializedProperty m_InstanceRoot = null;
@@ -226,6 +228,21 @@ namespace UnityGameFramework.Editor
                             m_UpdatePrefixUri.stringValue = updatePrefixUri;
                         }
                     }
+                    //TODO:有待测试这段编辑器脚本的正确性 还有是否可以主动设置CheckVersionListResult的模式？
+                    GUI.enabled = false;
+                    CheckVersionListResult checkVersionListResult = (CheckVersionListResult)EditorGUILayout.EnumPopup("Check VersionList Result", (CheckVersionListResult)m_CheckVersionListResult.enumValueIndex);
+                    if (checkVersionListResult != (CheckVersionListResult)m_CheckVersionListResult.enumValueIndex)
+                    {
+                        if (EditorApplication.isPlaying)
+                        {
+                            t.CheckVersionListResult = checkVersionListResult;
+                        }
+                        else
+                        {
+                            m_CheckVersionListResult.enumValueIndex = (int)checkVersionListResult;
+                        }
+                    }
+                    GUI.enabled = true;
 
                     int generateReadWriteVersionListLength = EditorGUILayout.DelayedIntField("Generate Read-Write Version List Length", m_GenerateReadWriteVersionListLength.intValue);
                     if (generateReadWriteVersionListLength != m_GenerateReadWriteVersionListLength.intValue)
@@ -363,6 +380,7 @@ namespace UnityGameFramework.Editor
             m_ResourceExpireTime = serializedObject.FindProperty("m_ResourceExpireTime");
             m_ResourcePriority = serializedObject.FindProperty("m_ResourcePriority");
             m_UpdatePrefixUri = serializedObject.FindProperty("m_UpdatePrefixUri");
+            m_CheckVersionListResult = serializedObject.FindProperty("m_CheckVersionListResult");
             m_GenerateReadWriteVersionListLength = serializedObject.FindProperty("m_GenerateReadWriteVersionListLength");
             m_UpdateRetryCount = serializedObject.FindProperty("m_UpdateRetryCount");
             m_InstanceRoot = serializedObject.FindProperty("m_InstanceRoot");
