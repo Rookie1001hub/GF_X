@@ -78,6 +78,11 @@ namespace GameFramework.Resource
         void ParseBytes(byte[] bytes);
 
         /// <summary>
+        /// 通过加载资源代理辅助器读取流文件资源的二进制流
+        /// </summary>
+        /// <param name="fullPath"></param>
+        void ReadStreamOnWebGL(string fullPath);
+        /// <summary>
         /// 通过加载资源代理辅助器开始异步加载资源。
         /// </summary>
         /// <param name="resource">资源。</param>

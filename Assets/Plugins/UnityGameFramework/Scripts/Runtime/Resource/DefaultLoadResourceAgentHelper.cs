@@ -233,6 +233,28 @@ namespace UnityGameFramework.Runtime
 
             m_BytesAssetBundleCreateRequest = AssetBundle.LoadFromMemoryAsync(bytes);
         }
+        /// <summary>
+        /// 通过加载资源代理辅助器读取流文件资源的二进制流
+        /// </summary>
+        /// <param name="fullPath"></param>
+        public override void ReadStreamOnWebGL(string fullPath)
+        {
+            //TODO:大文件小文件读取差异
+            try
+            {
+                using (System.IO.FileStream fileStream = new System.IO.FileStream(fullPath, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+                {
+                    byte[] bytes = new byte[fileStream.Length];
+                    int bytesRead = fileStream.Read(bytes, 0, (int)fileStream.Length);
+                    LoadResourceAgentHelperReadBytesCompleteEventArgs loadResourceAgentHelperReadBytesCompleteEventArgs = LoadResourceAgentHelperReadBytesCompleteEventArgs.Create(bytes);
+                    m_LoadResourceAgentHelperReadBytesCompleteEventHandler(this, loadResourceAgentHelperReadBytesCompleteEventArgs);
+                }
+            }
+            catch
+            {
+                Log.Fatal(fullPath + "can't read by FileStream.");
+            }
+        }
 
         /// <summary>
         /// 通过加载资源代理辅助器开始异步加载资源。
@@ -591,5 +613,7 @@ namespace UnityGameFramework.Runtime
                 }
             }
         }
+
+
     }
 }

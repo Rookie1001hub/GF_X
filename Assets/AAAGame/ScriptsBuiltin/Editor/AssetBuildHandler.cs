@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using GameFramework.Resource;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

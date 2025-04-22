@@ -54,6 +54,7 @@ namespace GameFramework.Resource
         private bool m_RefuseSetFlag;
         private string m_CurrentVariant;
         private string m_UpdatePrefixUri;
+        private CheckVersionListResult m_CheckVersionListResult;
         private string m_ApplicableGameVersion;
         private int m_InternalResourceVersion;
         private MemoryStream m_CachedStream;
@@ -579,7 +580,17 @@ namespace GameFramework.Resource
                 m_ResourceLoader.ResourcePriority = value;
             }
         }
-
+        /// <summary>
+        /// 检查版本文件的结果
+        /// </summary>
+        public CheckVersionListResult CheckVersionListResult
+        {
+            get => m_CheckVersionListResult;
+            set 
+            {
+                m_CheckVersionListResult = value;
+            }
+        }
         /// <summary>
         /// 资源校验开始事件。
         /// </summary>

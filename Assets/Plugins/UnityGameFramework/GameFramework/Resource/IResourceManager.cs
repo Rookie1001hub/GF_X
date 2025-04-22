@@ -308,6 +308,10 @@ namespace GameFramework.Resource
             get;
             set;
         }
+        /// <summary>
+        /// 检查版本文件的结果
+        /// </summary>
+        CheckVersionListResult CheckVersionListResult { get; set; }
 
         /// <summary>
         /// 资源校验开始事件。

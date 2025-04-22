@@ -231,6 +231,10 @@ namespace GameFramework.Resource
                             m_Helper.ReadBytes(fullPath);
                         }
                     }
+                    else if (resourceInfo.LoadType == LoadType.LoadFromStreamOnWebGL)
+                    {
+                        m_Helper.ReadStreamOnWebGL(fullPath);
+                    }
                     else
                     {
                         throw new GameFrameworkException(Utility.Text.Format("Resource load type '{0}' is not supported.", resourceInfo.LoadType));

@@ -6,6 +6,7 @@
 //------------------------------------------------------------
 
 using GameFramework;
+using GameFramework.Resource;
 using System.Collections.Generic;
 
 namespace UnityGameFramework.Editor.ResourceTools

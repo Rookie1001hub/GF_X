@@ -9,6 +9,7 @@ using UnityEditorInternal;
 using UnityGameFramework.Editor.ResourceTools;
 using GFResource = UnityGameFramework.Editor.ResourceTools.Resource;
 using UnityEngine.Windows;
+using GameFramework.Resource;
 
 namespace UGF.EditorTools.ResourceTools
 {

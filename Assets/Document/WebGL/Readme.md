@@ -1,0 +1,6 @@
+1.首先文件系统是不能在WebGL上使用（微信小游戏也是 WebGL范畴） 
+删除ResourceCollection.xml中关于FileSystem的设置 见图 ResourceCollection设置.jpg
+2.WebGL不能使用File.Read这种类似读取持久化目录这块内容的东西（个人认知里System.IO下的所有API在webgl上都不能用）
+但是竟然可以使用FileStream来读写持久化目录块内容（wtf 超出认知）所以尝试修改GF_X的UGF部分内容使其能在webgl
+运行起来，满足我个人使用（注意:只使用GF_X示例项目进行测试，具体能不能经得住项目考研后面再说;代码风格以及命名怎么样 
+我不管 反正我是彩笔）

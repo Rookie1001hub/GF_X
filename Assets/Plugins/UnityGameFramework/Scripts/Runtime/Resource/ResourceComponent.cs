@@ -76,6 +76,9 @@ namespace UnityGameFramework.Runtime
         private string m_UpdatePrefixUri = null;
 
         [SerializeField]
+        private CheckVersionListResult m_CheckVersionListResult;
+
+        [SerializeField]
         private int m_GenerateReadWriteVersionListLength = OneMegaBytes;
 
         [SerializeField]
@@ -319,7 +322,20 @@ namespace UnityGameFramework.Runtime
                 m_ResourceManager.UpdatePrefixUri = m_UpdatePrefixUri = value;
             }
         }
-
+        /// <summary>
+        /// 检查版本文件的结果
+        /// </summary>
+        public CheckVersionListResult CheckVersionListResult
+        {
+            get
+            {
+                return m_ResourceManager.CheckVersionListResult;
+            }
+            set
+            {
+                m_ResourceManager.CheckVersionListResult = m_CheckVersionListResult = value;
+            }
+        }
         /// <summary>
         /// 获取或设置每更新多少字节的资源，重新生成一次版本资源列表。
         /// </summary>
