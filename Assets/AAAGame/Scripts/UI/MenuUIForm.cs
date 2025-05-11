@@ -48,6 +48,14 @@ public partial class MenuUIForm : UIFormBase
         {
 
         }
+        else if (btSelf == varUpgradBackBtn)
+        {
+            varUpgradesWindow.SetActive(false);
+        }
+        else if (btSelf == varChaBackBtn)
+        {
+            varCharactersWindow.SetActive(false);
+        }
     }
     void ShowCoins()
     {

@@ -3410,6 +3410,8 @@ MonoBehaviour:
   varRightButton: {fileID: 7865717809549051291}
   varUpgradesWindow: {fileID: 5684671429147969123}
   varCharactersWindow: {fileID: 39581091014475242}
+  varUpgradBackBtn: {fileID: 3361528878052290486}
+  varChaBackBtn: {fileID: 6975531519378330687}
 --- !u!1 &7564034611082599641
 GameObject:
   m_ObjectHideFlags: 0
@@ -4138,6 +4140,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1778190311466338932, guid: e759716e46678c34fa8bd75fd47d5277, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1778190311466338932, guid: e759716e46678c34fa8bd75fd47d5277, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1778190311466338932, guid: e759716e46678c34fa8bd75fd47d5277, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 210295419212077943}
+    - target: {fileID: 1778190311466338932, guid: e759716e46678c34fa8bd75fd47d5277, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1778190311466338932, guid: e759716e46678c34fa8bd75fd47d5277, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ClickUIButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 1778190311466338932, guid: e759716e46678c34fa8bd75fd47d5277, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UIFormBase, Hotfix
+      objectReference: {fileID: 0}
+    - target: {fileID: 1778190311466338932, guid: e759716e46678c34fa8bd75fd47d5277, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 3361528878052290486}
+    - target: {fileID: 1778190311466338932, guid: e759716e46678c34fa8bd75fd47d5277, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.UI.Button, UnityEngine.UI
+      objectReference: {fileID: 0}
     - target: {fileID: 6567166028367545974, guid: e759716e46678c34fa8bd75fd47d5277, type: 3}
       propertyPath: m_Name
       value: UpgradBackBtn
@@ -4156,6 +4190,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e759716e46678c34fa8bd75fd47d5277, type: 3}
+--- !u!114 &3361528878052290486 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1778190311466338932, guid: e759716e46678c34fa8bd75fd47d5277, type: 3}
+  m_PrefabInstance: {fileID: 3894463719903077826}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7865722204995216308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &3481189853531105342 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 451558038765194748, guid: e759716e46678c34fa8bd75fd47d5277, type: 3}
@@ -4259,6 +4304,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1778190311466338932, guid: 22aee585078fe8d4b86138fb1ff9a39a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1778190311466338932, guid: 22aee585078fe8d4b86138fb1ff9a39a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1778190311466338932, guid: 22aee585078fe8d4b86138fb1ff9a39a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 210295419212077943}
+    - target: {fileID: 1778190311466338932, guid: 22aee585078fe8d4b86138fb1ff9a39a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1778190311466338932, guid: 22aee585078fe8d4b86138fb1ff9a39a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ClickUIButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 1778190311466338932, guid: 22aee585078fe8d4b86138fb1ff9a39a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UIFormBase, Hotfix
+      objectReference: {fileID: 0}
+    - target: {fileID: 1778190311466338932, guid: 22aee585078fe8d4b86138fb1ff9a39a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 6975531519378330687}
+    - target: {fileID: 1778190311466338932, guid: 22aee585078fe8d4b86138fb1ff9a39a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.UI.Button, UnityEngine.UI
+      objectReference: {fileID: 0}
     - target: {fileID: 6567166028367545974, guid: 22aee585078fe8d4b86138fb1ff9a39a, type: 3}
       propertyPath: m_Name
       value: ChaBackBtn
@@ -4287,6 +4364,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6567166028367545974, guid: 22aee585078fe8d4b86138fb1ff9a39a, type: 3}
   m_PrefabInstance: {fileID: 8674907460825783883}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6975531519378330687 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1778190311466338932, guid: 22aee585078fe8d4b86138fb1ff9a39a, type: 3}
+  m_PrefabInstance: {fileID: 8674907460825783883}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2540088373225478205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &9090295925892076471 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 451558038765194748, guid: 22aee585078fe8d4b86138fb1ff9a39a, type: 3}
