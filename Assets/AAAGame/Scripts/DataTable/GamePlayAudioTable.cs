@@ -46,7 +46,7 @@ public class GamePlayAudioTable : DataRowBase
         }
 
         /// <summary>
-        /// 
+        /// 音效关键字
         /// </summary>
         public string AudioKeyword
         {
@@ -55,7 +55,7 @@ public class GamePlayAudioTable : DataRowBase
         }
 
         /// <summary>
-        /// 
+        /// 音效所在的组
         /// </summary>
         public Const.SoundGroup SoundGroup
         {
@@ -64,7 +64,7 @@ public class GamePlayAudioTable : DataRowBase
         }
 
         /// <summary>
-        /// 
+        /// 音效大小
         /// </summary>
         public float Volume
         {
@@ -73,7 +73,7 @@ public class GamePlayAudioTable : DataRowBase
         }
 
         /// <summary>
-        /// 
+        /// 音高
         /// </summary>
         public float Pitch
         {
