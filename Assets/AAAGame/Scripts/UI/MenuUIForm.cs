@@ -25,21 +25,36 @@ public partial class MenuUIForm : UIFormBase
     protected override void OnInit(object userData)
     {
         base.OnInit(userData);
-        gameObject.AddComponent<ScalerHelper>();
-        btnClickTableData = GF.DataTable.GetDataTable<GamePlayAudioTable>().GetDataRow(ele => ele.AudioKeyword == AudioConst.Sound_click);
+        OnFormInit();
     }
     protected override void OnOpen(object userData)
     {
         base.OnOpen(userData);
-        Log.Debug("打开了MenuUIForm");
-        var bgmTableData = GF.DataTable.GetDataTable<GamePlayAudioTable>().GetDataRow(ele => ele.AudioKeyword == AudioConst.Music_music);
-        GF.Sound.PlayGamePlayBGM(bgmTableData.AudioPath, bgmTableData.SoundGroup.ToString(), bgmTableData.Volume);
-        //检查要展示的数据
-        ShowCoins();
+        OnFormOpen();
     }
     protected override void OnButtonClick(object sender, Button btSelf)
     {
         base.OnButtonClick(sender, btSelf);
+        OnBtnClick(btSelf);
+    }
+    protected override void OnClose(bool isShutdown, object userData)
+    {
+        base.OnClose(isShutdown, userData);
+    }
+    void OnFormInit()
+    {
+        gameObject.AddComponent<ScalerHelper>();
+        btnClickTableData = GF.DataTable.GetDataTable<GamePlayAudioTable>().GetDataRow(ele => ele.AudioKeyword == AudioConst.Sound_click);
+    }
+    void OnFormOpen()
+    {
+        Log.Debug("打开了MenuUIForm");
+        var bgmTableData = GF.DataTable.GetDataTable<GamePlayAudioTable>().GetDataRow(ele => ele.AudioKeyword == AudioConst.Music_music);
+        GF.Sound.PlayGamePlayBGM(bgmTableData.AudioPath, bgmTableData.SoundGroup.ToString(), bgmTableData.Volume);
+        RefershCoins();
+    }
+    void OnBtnClick(Button btSelf)
+    {
         GF.Sound.PlayGamePlaySound(btnClickTableData.AudioPath, btnClickTableData.SoundGroup.ToString(), false, btnClickTableData.Volume);
         if (btSelf == varCharactersButton)
         {
@@ -74,11 +89,7 @@ public partial class MenuUIForm : UIFormBase
             varCharactersWindow.SetActive(false);
         }
     }
-    protected override void OnClose(bool isShutdown, object userData)
-    {
-        base.OnClose(isShutdown, userData);
-    }
-    void ShowCoins()
+    void RefershCoins()
     {
 
     }
