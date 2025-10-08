@@ -7,7 +7,7 @@ using UnityGameFramework.Runtime;
 public class MenuProcedure : ProcedureBase
 {
     int menuUIFormId;
-  
+
     IFsm<IProcedureManager> procedure;
     protected override void OnInit(IFsm<IProcedureManager> procedureOwner)
     {

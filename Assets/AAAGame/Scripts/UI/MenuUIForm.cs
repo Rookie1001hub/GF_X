@@ -20,7 +20,8 @@ public partial class MenuUIForm : UIFormBase
     #endregion
     #region private 
     GamePlayAudioTable btnClickTableData;
-    
+    PlayerDataModel playerData;
+    GamePlayDataModel gameplayerData;
     #endregion
     protected override void OnInit(object userData)
     {
@@ -51,6 +52,9 @@ public partial class MenuUIForm : UIFormBase
         Log.Debug("打开了MenuUIForm");
         var bgmTableData = GF.DataTable.GetDataTable<GamePlayAudioTable>().GetDataRow(ele => ele.AudioKeyword == AudioConst.Music_music);
         GF.Sound.PlayGamePlayBGM(bgmTableData.AudioPath, bgmTableData.SoundGroup.ToString(), bgmTableData.Volume);
+        //加载所有的游戏数据
+        playerData = GF.DataModel.GetOrCreate<PlayerDataModel>();
+        gameplayerData = GF.DataModel.GetOrCreate<GamePlayDataModel>();
         RefershCoins();
     }
     void OnBtnClick(Button btSelf)
@@ -91,6 +95,6 @@ public partial class MenuUIForm : UIFormBase
     }
     void RefershCoins()
     {
-
+        varGoldText.text = playerData.Coins.ToString();
     }
 }
